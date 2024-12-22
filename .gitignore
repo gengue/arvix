@@ -1,0 +1,10 @@
+.idea
+.DS_Store
+
+.env
+dist
+pb_data
+
+arvix
+main
+

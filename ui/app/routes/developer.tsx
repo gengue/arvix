@@ -1,8 +1,8 @@
+import { Button, Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
 import { Link, data } from "react-router";
 import pb from "~/lib/pb";
 import type { ClientsResponse, ProjectsRecord } from "~/lib/pb.types";
 import type { Route } from "./+types/developer";
-import { Card, CardHeader, CardFooter, Image, Button } from "@nextui-org/react";
 
 export function meta(params: Route.MetaArgs) {
 	return [
@@ -54,8 +54,8 @@ export default function DeveloperPage({ loaderData }: Route.ComponentProps) {
 			<h2 className="text-2xl my-8">Proyectos</h2>
 			<nav className="flex flex-col flex-wrap gap-6">
 				{expand?.projects_via_client?.map((project) => (
-					<Card isFooterBlurred className="w-[300px] h-[300px]" key={project.id}>
-						<CardHeader className="absolute z-10 top-1 flex-col items-start">
+					<Card isFooterBlurred className="w-[300px] h-[300px] border-none" key={project.id}>
+						<CardHeader className="absolute z-10 top-0 flex-col items-start bg-white">
 							<h4 className="text-black font-medium text-2xl">{project.name}</h4>
 						</CardHeader>
 						<Image
@@ -66,12 +66,16 @@ export default function DeveloperPage({ loaderData }: Route.ComponentProps) {
 							shadow="lg"
 						/>
 						<Image removeWrapper alt={project.name} className="z-0 w-full h-full object-cover" src={project.coverImg} />
-						<CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
-							<div>
-								<p className="text-black text-tiny">Unidades disponibles</p>
-							</div>
+						<CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+							<p className="text-tiny text-white/80">Unidades disponibles</p>
 							<Link to={`/${slug}/${project.slug}`} viewTransition>
-								<Button className="text-tiny" color="primary" radius="full" size="sm">
+								<Button
+									className="text-tiny text-white bg-black/20"
+									color="default"
+									radius="lg"
+									size="sm"
+									variant="flat"
+								>
 									Ver
 								</Button>
 							</Link>

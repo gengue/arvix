@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 import { data } from "react-router";
 import pb from "~/lib/pb";
 import type { Route } from "./+types/project";
-import { useState } from "react";
 
 export function meta(params: Route.MetaArgs) {
 	return [
@@ -47,7 +46,13 @@ export default function ProjectStartPage({ loaderData }: Route.ComponentProps) {
 				<div className="absolute bottom-28 left-0 right-0 flex justify-center  z-20">
 					<div className="grid gap-8">
 						<img src={logo} alt="Aurora Logo" className="h-42 my-4" />
-						<Button variant="faded" size="lg" radius="full" className="p-8">
+						<Button
+							className="text-white backdrop-blur-xl bg-black/60 p-8"
+							color="default"
+							radius="full"
+							size="lg"
+							variant="flat"
+						>
 							<span className="text-lg font-medium">Entrar</span>
 							<ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
 						</Button>

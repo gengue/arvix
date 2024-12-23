@@ -873,7 +873,7 @@ func init() {
 				"indexes": [
 					"CREATE UNIQUE INDEX ` + "`" + `idx_SMMgv9HzZ4` + "`" + ` ON ` + "`" + `organizations` + "`" + ` (` + "`" + `slug` + "`" + `)"
 				],
-				"listRule": null,
+				"listRule": "",
 				"name": "organizations",
 				"system": false,
 				"type": "base",
@@ -1014,7 +1014,7 @@ func init() {
 						"pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
 						"presentable": false,
 						"primaryKey": false,
-						"required": false,
+						"required": true,
 						"system": false,
 						"type": "text"
 					},
@@ -1076,12 +1076,12 @@ func init() {
 				"indexes": [
 					"CREATE UNIQUE INDEX ` + "`" + `idx_wSsUNrWb0K` + "`" + ` ON ` + "`" + `clients` + "`" + ` (` + "`" + `slug` + "`" + `)"
 				],
-				"listRule": null,
+				"listRule": "",
 				"name": "clients",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,
@@ -1162,7 +1162,14 @@ func init() {
 						"protected": false,
 						"required": false,
 						"system": false,
-						"thumbs": [],
+						"thumbs": [
+							"0x60",
+							"0x120",
+							"0x200",
+							"60x0",
+							"120x0",
+							"200x0"
+						],
 						"type": "file"
 					},
 					{
@@ -1192,7 +1199,7 @@ func init() {
 						"id": "relation3927763390",
 						"maxSelect": 1,
 						"minSelect": 0,
-						"name": "clientId",
+						"name": "client",
 						"presentable": false,
 						"required": true,
 						"system": false,
@@ -1317,7 +1324,11 @@ func init() {
 						"protected": false,
 						"required": false,
 						"system": false,
-						"thumbs": [],
+						"thumbs": [
+							"300x0",
+							"600x0",
+							"1920x1080"
+						],
 						"type": "file"
 					},
 					{
@@ -1354,12 +1365,12 @@ func init() {
 				],
 				"id": "pbc_484305853",
 				"indexes": [],
-				"listRule": null,
+				"listRule": "",
 				"name": "projects",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,

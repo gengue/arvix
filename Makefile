@@ -13,8 +13,8 @@ ui-dev:
 build:
 	@cd ui && npm run build && cd .. && go build
 
-gen-types:
-	npx pocketbase-typegen --db ./pb_data/data.db --out ui/app/pb.types.ts
+types:
+	npx pocketbase-typegen --db ./pb_data/data.db --out ui/app/lib/pb.types.ts
 
 db-snapshot:
 	@go run . migrate collections

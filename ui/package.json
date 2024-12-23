@@ -1,38 +1,43 @@
 {
-  "name": "ui",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "cross-env NODE_ENV=production react-router build",
-    "dev": "react-router dev",
-    "start": "cross-env NODE_ENV=production react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
-  },
-  "dependencies": {
-    "@react-router/node": "^7.1.0",
-    "@react-router/serve": "^7.1.0",
-    "@refinedev/react-router": "^1.0.1",
-    "@refinedev/react-table": "^5.6.15",
-    "isbot": "^5.1.17",
-    "lodash": "^4.17.21",
-    "pocketbase": "^0.24.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router": "^7.1.0",
-    "refine-pocketbase": "^0.2.0"
-  },
-  "devDependencies": {
-    "@react-router/dev": "^7.1.0",
-    "@types/lodash": "^4.17.13",
-    "@types/node": "^20",
-    "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.1",
-    "autoprefixer": "^10.4.20",
-    "cross-env": "^7.0.3",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16",
-    "typescript": "^5.7.2",
-    "vite": "^5.4.11",
-    "vite-tsconfig-paths": "^5.1.4"
-  }
+	"name": "ui",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "cross-env NODE_ENV=production react-router build",
+		"dev": "react-router dev",
+		"start": "cross-env NODE_ENV=production react-router-serve ./build/server/index.js",
+		"typecheck": "react-router typegen && tsc",
+		"format": "biome format --write ./"
+	},
+	"dependencies": {
+		"@nextui-org/react": "^2.6.8",
+		"@react-router/node": "^7.1.0",
+		"@react-router/serve": "^7.1.0",
+		"@refinedev/react-router": "^1.0.1",
+		"@refinedev/react-table": "^5.6.15",
+		"framer-motion": "^11.15.0",
+		"isbot": "^5.1.17",
+		"lodash": "^4.17.21",
+		"lucide-react": "^0.469.0",
+		"pocketbase": "^0.24.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"react-router": "^7.1.0",
+		"refine-pocketbase": "^0.2.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@react-router/dev": "^7.1.0",
+		"@types/lodash": "^4.17.13",
+		"@types/node": "^20",
+		"@types/react": "^19.0.1",
+		"@types/react-dom": "^19.0.1",
+		"autoprefixer": "^10.4.20",
+		"cross-env": "^7.0.3",
+		"postcss": "^8.4.49",
+		"tailwindcss": "^3.4.16",
+		"typescript": "^5.7.2",
+		"vite": "^5.4.11",
+		"vite-tsconfig-paths": "^5.1.4"
+	}
 }

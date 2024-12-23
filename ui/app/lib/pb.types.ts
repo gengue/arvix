@@ -11,10 +11,19 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
+	Amenities = "amenities",
+	Availabilities = "availabilities",
 	Clients = "clients",
+	Features = "features",
 	OrganizationMembership = "organizationMembership",
 	Organizations = "organizations",
+	ProjectClients = "projectClients",
 	Projects = "projects",
+	Spin = "spin",
+	Structures = "structures",
+	Typologies = "typologies",
+	UnitFeatures = "unitFeatures",
+	Units = "units",
 	Users = "users",
 }
 
@@ -89,14 +98,58 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export enum AmenitiesResourceTypeOptions {
+	"Gallery" = "Gallery",
+	"Tour360" = "Tour360",
+}
+export type AmenitiesRecord = {
+	created?: IsoDateString
+	ico?: string
+	id: string
+	img?: string
+	label: string
+	project: RecordIdString
+	resourceType: AmenitiesResourceTypeOptions
+	updated?: IsoDateString
+	url?: string
+}
+
+export enum AvailabilitiesStatusOptions {
+	"Available" = "Available",
+	"Reserved" = "Reserved",
+	"Sold" = "Sold",
+}
+export type AvailabilitiesRecord = {
+	created?: IsoDateString
+	id: string
+	status: AvailabilitiesStatusOptions
+	unit: RecordIdString
+	updated?: IsoDateString
+}
+
 export type ClientsRecord = {
 	created?: IsoDateString
 	id: string
 	logo?: string
 	name: string
 	orgId: RecordIdString
-	slug?: string
+	slug: string
 	updated?: IsoDateString
+}
+
+export enum FeaturesValueTypeOptions {
+	"int" = "int",
+	"bool" = "bool",
+	"decimal" = "decimal",
+	"text" = "text",
+}
+export type FeaturesRecord = {
+	created?: IsoDateString
+	id: string
+	name: string
+	project: RecordIdString
+	updated?: IsoDateString
+	valueType: FeaturesValueTypeOptions
 }
 
 export enum OrganizationMembershipRoleOptions {
@@ -108,10 +161,10 @@ export enum OrganizationMembershipRoleOptions {
 export type OrganizationMembershipRecord = {
 	created?: IsoDateString
 	id: string
-	orgId?: RecordIdString
+	orgId: RecordIdString
 	role?: OrganizationMembershipRoleOptions
 	updated?: IsoDateString
-	userId?: RecordIdString
+	userId: RecordIdString
 }
 
 export type OrganizationsRecord = {
@@ -123,6 +176,13 @@ export type OrganizationsRecord = {
 	updated?: IsoDateString
 }
 
+export type ProjectClientsRecord = {
+	created?: IsoDateString
+	id: string
+	updated?: IsoDateString
+	userClient: RecordIdString
+}
+
 export enum ProjectsTypeOptions {
 	"SingleTower" = "SingleTower",
 	"MultiTower" = "MultiTower",
@@ -130,7 +190,7 @@ export enum ProjectsTypeOptions {
 	"other" = "other",
 }
 export type ProjectsRecord<Tlocation = unknown> = {
-	clientId: RecordIdString
+	client: RecordIdString
 	contentDisclaimer?: HTMLString
 	coverImg?: string
 	coverVideoUrl?: string
@@ -138,7 +198,7 @@ export type ProjectsRecord<Tlocation = unknown> = {
 	ctaEnterText?: string
 	description?: HTMLString
 	id: string
-	isPublished?: boolean
+	isPublished: boolean
 	location?: null | Tlocation
 	logo?: string
 	mainColor?: string
@@ -150,6 +210,74 @@ export type ProjectsRecord<Tlocation = unknown> = {
 	slug: string
 	type: ProjectsTypeOptions
 	updated?: IsoDateString
+}
+
+export type SpinRecord<Tmeta = unknown> = {
+	created?: IsoDateString
+	id: string
+	img: string
+	meta?: null | Tmeta
+	nextVideoTransition?: string
+	order?: number
+	prevVideoTransition?: string
+	project: RecordIdString
+	updated?: IsoDateString
+}
+
+export type StructuresRecord<Tmeta = unknown> = {
+	created?: IsoDateString
+	id: string
+	img?: string
+	meta?: null | Tmeta
+	name: string
+	order: number
+	parent?: RecordIdString
+	project: RecordIdString
+	slug: string
+	updated?: IsoDateString
+}
+
+export type TypologiesRecord = {
+	basePrice?: number
+	created?: IsoDateString
+	id: string
+	name?: string
+	project?: RecordIdString
+	slug: string
+	updated?: IsoDateString
+}
+
+export type UnitFeaturesRecord = {
+	created?: IsoDateString
+	feature: RecordIdString
+	id: string
+	order?: number
+	unit: RecordIdString
+	updated?: IsoDateString
+	value?: string
+}
+
+export enum UnitsTypeOptions {
+	"Apartment" = "Apartment",
+	"House" = "House",
+	"Amenity" = "Amenity",
+}
+export type UnitsRecord<Tmeta = unknown> = {
+	created?: IsoDateString
+	gallery?: string[]
+	id: string
+	label?: string
+	meta?: null | Tmeta
+	name: string
+	plansImg?: string
+	price?: number
+	slug: string
+	structure: RecordIdString
+	tour360?: string
+	type: UnitsTypeOptions
+	typology?: RecordIdString
+	updated?: IsoDateString
+	views?: string[]
 }
 
 export type UsersRecord = {
@@ -171,10 +299,19 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type AmenitiesResponse<Texpand = unknown> = Required<AmenitiesRecord> & BaseSystemFields<Texpand>
+export type AvailabilitiesResponse<Texpand = unknown> = Required<AvailabilitiesRecord> & BaseSystemFields<Texpand>
 export type ClientsResponse<Texpand = unknown> = Required<ClientsRecord> & BaseSystemFields<Texpand>
+export type FeaturesResponse<Texpand = unknown> = Required<FeaturesRecord> & BaseSystemFields<Texpand>
 export type OrganizationMembershipResponse<Texpand = unknown> = Required<OrganizationMembershipRecord> & BaseSystemFields<Texpand>
 export type OrganizationsResponse<Texpand = unknown> = Required<OrganizationsRecord> & BaseSystemFields<Texpand>
+export type ProjectClientsResponse<Texpand = unknown> = Required<ProjectClientsRecord> & BaseSystemFields<Texpand>
 export type ProjectsResponse<Tlocation = unknown, Texpand = unknown> = Required<ProjectsRecord<Tlocation>> & BaseSystemFields<Texpand>
+export type SpinResponse<Tmeta = unknown, Texpand = unknown> = Required<SpinRecord<Tmeta>> & BaseSystemFields<Texpand>
+export type StructuresResponse<Tmeta = unknown, Texpand = unknown> = Required<StructuresRecord<Tmeta>> & BaseSystemFields<Texpand>
+export type TypologiesResponse<Texpand = unknown> = Required<TypologiesRecord> & BaseSystemFields<Texpand>
+export type UnitFeaturesResponse<Texpand = unknown> = Required<UnitFeaturesRecord> & BaseSystemFields<Texpand>
+export type UnitsResponse<Tmeta = unknown, Texpand = unknown> = Required<UnitsRecord<Tmeta>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -185,10 +322,19 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	amenities: AmenitiesRecord
+	availabilities: AvailabilitiesRecord
 	clients: ClientsRecord
+	features: FeaturesRecord
 	organizationMembership: OrganizationMembershipRecord
 	organizations: OrganizationsRecord
+	projectClients: ProjectClientsRecord
 	projects: ProjectsRecord
+	spin: SpinRecord
+	structures: StructuresRecord
+	typologies: TypologiesRecord
+	unitFeatures: UnitFeaturesRecord
+	units: UnitsRecord
 	users: UsersRecord
 }
 
@@ -198,10 +344,19 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	amenities: AmenitiesResponse
+	availabilities: AvailabilitiesResponse
 	clients: ClientsResponse
+	features: FeaturesResponse
 	organizationMembership: OrganizationMembershipResponse
 	organizations: OrganizationsResponse
+	projectClients: ProjectClientsResponse
 	projects: ProjectsResponse
+	spin: SpinResponse
+	structures: StructuresResponse
+	typologies: TypologiesResponse
+	unitFeatures: UnitFeaturesResponse
+	units: UnitsResponse
 	users: UsersResponse
 }
 
@@ -214,9 +369,18 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_mfas'): RecordService<MfasResponse>
 	collection(idOrName: '_otps'): RecordService<OtpsResponse>
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
+	collection(idOrName: 'amenities'): RecordService<AmenitiesResponse>
+	collection(idOrName: 'availabilities'): RecordService<AvailabilitiesResponse>
 	collection(idOrName: 'clients'): RecordService<ClientsResponse>
+	collection(idOrName: 'features'): RecordService<FeaturesResponse>
 	collection(idOrName: 'organizationMembership'): RecordService<OrganizationMembershipResponse>
 	collection(idOrName: 'organizations'): RecordService<OrganizationsResponse>
+	collection(idOrName: 'projectClients'): RecordService<ProjectClientsResponse>
 	collection(idOrName: 'projects'): RecordService<ProjectsResponse>
+	collection(idOrName: 'spin'): RecordService<SpinResponse>
+	collection(idOrName: 'structures'): RecordService<StructuresResponse>
+	collection(idOrName: 'typologies'): RecordService<TypologiesResponse>
+	collection(idOrName: 'unitFeatures'): RecordService<UnitFeaturesResponse>
+	collection(idOrName: 'units'): RecordService<UnitsResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 }

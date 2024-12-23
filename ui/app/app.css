@@ -43,3 +43,12 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.absolute-center {
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+}
+
+/* based on https://nikitahl.com/full-size-background-video */
+.vimeo-video {
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-[56.25vw] min-h-screen min-w-[177.77vh];
+}

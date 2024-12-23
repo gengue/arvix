@@ -44,7 +44,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 }
 
 export default function DeveloperPage({ loaderData }: Route.ComponentProps) {
-	const { name, logo, slug, expand } = loaderData;
+	const { name, logo, expand } = loaderData;
 	return (
 		<main className="container mx-auto">
 			<div className="flex gap-4 my-6 p-4 items-center">
@@ -54,33 +54,20 @@ export default function DeveloperPage({ loaderData }: Route.ComponentProps) {
 			<h2 className="text-2xl my-8">Proyectos</h2>
 			<nav className="flex flex-col flex-wrap gap-6">
 				{expand?.projects_via_client?.map((project) => (
-					<Card isFooterBlurred className="w-[300px] h-[300px] border-none" key={project.id}>
-						<CardHeader className="absolute z-10 top-0 flex-col items-start bg-white">
-							<h4 className="text-black font-medium text-2xl">{project.name}</h4>
-						</CardHeader>
-						<Image
-							removeWrapper
-							alt="Project logo"
-							className="absolute-center bg-radial from-black to-transparent"
-							src={project.logo}
-							shadow="lg"
-						/>
-						<Image removeWrapper alt={project.name} className="z-0 w-full h-full object-cover" src={project.coverImg} />
-						<CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-							<p className="text-tiny text-white/80">Unidades disponibles</p>
-							<Link to={`/${slug}/${project.slug}`} viewTransition>
-								<Button
-									className="text-tiny text-white bg-black/20"
-									color="default"
-									radius="lg"
-									size="sm"
-									variant="flat"
-								>
-									Ver
-								</Button>
-							</Link>
-						</CardFooter>
-					</Card>
+					<Link to={project.slug} viewTransition key={project.id}>
+						<Card isFooterBlurred className="w-[300px] h-[300px] border-none">
+							<CardHeader className="absolute z-10 top-0 flex-col items-start bg-white">
+								<h4 className="text-black font-medium text-2xl">{project.name}</h4>
+							</CardHeader>
+							<Image
+								removeWrapper
+								isZoomed
+								alt={project.name}
+								className="z-0 w-full h-full object-cover"
+								src={project.coverImg}
+							/>
+						</Card>
+					</Link>
 				))}
 			</nav>
 		</main>

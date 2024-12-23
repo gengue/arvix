@@ -1,6 +1,6 @@
 import { Button } from "@nextui-org/button";
 import { ArrowRight } from "lucide-react";
-import { data } from "react-router";
+import { data, Link } from "react-router";
 import pb from "~/lib/pb";
 import type { Route } from "./+types/project";
 
@@ -12,24 +12,20 @@ export function meta(params: Route.MetaArgs) {
 }
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-	const dev = await pb
-		.collection("clients")
-		.getFirstListItem(pb.filter("slug={:slug}", { slug: params.developerSlug }), {
+	const [dev, record] = await Promise.all([
+		pb.collection("clients").getFirstListItem(pb.filter("slug={:slug}", { slug: params.developerSlug }), {
 			fields: "id",
-		});
+		}),
+		await pb.collection("projects").getFirstListItem(pb.filter("slug={:slug}", { slug: params.projectSlug }), {
+			fields: "collectionId,id,slug,logo,coverImg,coverVideoUrl",
+		}),
+	]);
 
 	if (!dev) {
 		throw data("Record not found", { status: 404 });
 	}
 
-	const record = await pb
-		.collection("projects")
-		.getFirstListItem(pb.filter("slug={:slug}", { slug: params.projectSlug }), {
-			expands: "spin,structures,structures.units_via_structure",
-		});
-
-	const url = pb.files.getURL(record, record.logo, { thumb: "100x250" });
-	record.logo = url;
+	record.logo = pb.files.getURL(record, record.logo, { thumb: "100x250" });
 
 	if (record?.coverImg) {
 		record.coverImg = pb.files.getURL(record, record.coverImg);
@@ -47,11 +43,14 @@ export default function ProjectStartPage({ loaderData }: Route.ComponentProps) {
 					<div className="grid gap-8">
 						<img src={logo} alt="Aurora Logo" className="h-42 my-4" />
 						<Button
+							as={Link}
+							to="spin"
 							className="text-white backdrop-blur-xl bg-black/60 p-8"
 							color="default"
 							radius="full"
 							size="lg"
 							variant="flat"
+							// style={{ boxShadow: "rgba(191, 151, 255, 0.44) 0px 0px 4px inset" }}
 						>
 							<span className="text-lg font-medium">Entrar</span>
 							<ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />

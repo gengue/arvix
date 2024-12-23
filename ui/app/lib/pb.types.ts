@@ -213,13 +213,13 @@ export type ProjectsRecord<Tlocation = unknown> = {
 }
 
 export type SpinRecord<Tmeta = unknown> = {
+	backVideo?: string
 	created?: IsoDateString
+	forwardVideo?: string
 	id: string
 	img: string
 	meta?: null | Tmeta
-	nextVideoTransition?: string
-	order?: number
-	prevVideoTransition?: string
+	order: number
 	project: RecordIdString
 	updated?: IsoDateString
 }

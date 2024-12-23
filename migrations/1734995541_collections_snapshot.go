@@ -1502,12 +1502,12 @@ func init() {
 				],
 				"id": "pbc_1684055786",
 				"indexes": [],
-				"listRule": null,
+				"listRule": "",
 				"name": "amenities",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,
@@ -1548,7 +1548,7 @@ func init() {
 						"name": "order",
 						"onlyInt": true,
 						"presentable": false,
-						"required": false,
+						"required": true,
 						"system": false,
 						"type": "number"
 					},
@@ -1556,7 +1556,7 @@ func init() {
 						"hidden": false,
 						"id": "file3150104748",
 						"maxSelect": 1,
-						"maxSize": 0,
+						"maxSize": 10000000,
 						"mimeTypes": [
 							"image/png",
 							"image/vnd.mozilla.apng",
@@ -1585,14 +1585,14 @@ func init() {
 						"hidden": false,
 						"id": "file226210710",
 						"maxSelect": 1,
-						"maxSize": 0,
+						"maxSize": 10000000,
 						"mimeTypes": [
 							"video/mp4",
 							"video/x-m4v",
 							"video/webm",
 							"video/quicktime"
 						],
-						"name": "prevVideoTransition",
+						"name": "backVideo",
 						"presentable": false,
 						"protected": false,
 						"required": false,
@@ -1604,14 +1604,14 @@ func init() {
 						"hidden": false,
 						"id": "file3347502970",
 						"maxSelect": 1,
-						"maxSize": 0,
+						"maxSize": 10000000,
 						"mimeTypes": [
 							"video/mp4",
 							"video/x-m4v",
 							"video/webm",
 							"video/quicktime"
 						],
-						"name": "nextVideoTransition",
+						"name": "forwardVideo",
 						"presentable": false,
 						"protected": false,
 						"required": false,
@@ -1642,12 +1642,12 @@ func init() {
 				],
 				"id": "pbc_2648271836",
 				"indexes": [],
-				"listRule": null,
+				"listRule": "",
 				"name": "spin",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,
@@ -1786,12 +1786,12 @@ func init() {
 				],
 				"id": "pbc_2769221066",
 				"indexes": [],
-				"listRule": null,
+				"listRule": "",
 				"name": "structures",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,
@@ -1887,12 +1887,12 @@ func init() {
 				],
 				"id": "pbc_991103706",
 				"indexes": [],
-				"listRule": null,
+				"listRule": "",
 				"name": "typologies",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,
@@ -1978,12 +1978,12 @@ func init() {
 				],
 				"id": "pbc_4287529994",
 				"indexes": [],
-				"listRule": null,
+				"listRule": "",
 				"name": "features",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,
@@ -2256,12 +2256,12 @@ func init() {
 				"indexes": [
 					"CREATE INDEX ` + "`" + `idx_LiO6tJpF8H` + "`" + ` ON ` + "`" + `units` + "`" + ` (` + "`" + `structure` + "`" + `)"
 				],
-				"listRule": null,
+				"listRule": "",
 				"name": "units",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,
@@ -2358,12 +2358,12 @@ func init() {
 				"indexes": [
 					"CREATE INDEX ` + "`" + `idx_xDkt9oPYXI` + "`" + ` ON ` + "`" + `unitFeatures` + "`" + ` (\n  ` + "`" + `unit` + "`" + `,\n  ` + "`" + `feature` + "`" + `,\n  ` + "`" + `order` + "`" + `\n)"
 				],
-				"listRule": null,
+				"listRule": "",
 				"name": "unitFeatures",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
-				"viewRule": null
+				"viewRule": ""
 			},
 			{
 				"createRule": null,

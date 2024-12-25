@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import React from "react";
+import type { Map as MapType } from "react-img-mapper";
 import useDebouce from "~/hooks/useDebouce";
 import type { SpinRecord } from "~/lib/pb.types";
 import type { LoaderData } from "~/routes/masterplan-layout";
@@ -69,6 +70,7 @@ export default function useSpin(data?: LoaderData) {
 		videoRef,
 		isPlaying,
 		poster: state.type === "intro" ? state.spin?.img : poster,
+		meta: state.spin?.meta as MapType,
 	};
 }
 

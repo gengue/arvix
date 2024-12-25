@@ -12,6 +12,7 @@ export default [
 			index("routes/admin/dashboard.tsx"),
 			route("login", "routes/admin/login.tsx"),
 			route("organizations", "routes/admin/orgs.tsx"),
+			route("mapper", "routes/admin/mapper.tsx"),
 		]),
 	]),
 ] satisfies RouteConfig;

@@ -21,7 +21,6 @@ export default function AdminLayout() {
 		<Refine
 			authProvider={authProvider(pb, {
 				loginRedirectTo: "/admin",
-				providerName: "google",
 			})}
 			dataProvider={dataProvider(pb)}
 			liveProvider={liveProvider(pb)}

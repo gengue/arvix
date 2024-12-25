@@ -5,10 +5,7 @@ import type { ClientsResponse, ProjectsRecord } from "~/lib/pb.types";
 import type { Route } from "./+types/developer";
 
 export function meta(params: Route.MetaArgs) {
-	return [
-		{ title: `${params.data.name} - Proyectos` },
-		{ name: "description", content: `Proyectos de ${params.data.name}` },
-	];
+	return [{ title: params.data?.name }];
 }
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {

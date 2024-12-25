@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
 
-export function meta({}: Route.MetaArgs) {
+export function meta(params: Route.MetaArgs) {
 	return [{ title: "Welcome to Arviz" }, { name: "description", content: "Arquitectural Visualization" }];
 }
 

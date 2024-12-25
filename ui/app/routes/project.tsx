@@ -5,10 +5,7 @@ import pb from "~/lib/pb";
 import type { Route } from "./+types/project";
 
 export function meta(params: Route.MetaArgs) {
-	return [
-		{ title: `${params.data.name} - Proyectos` },
-		{ name: "description", content: `Proyectos de ${params.data.name}` },
-	];
+	return [{ title: params?.data?.name }];
 }
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
@@ -17,7 +14,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 			fields: "id",
 		}),
 		await pb.collection("projects").getFirstListItem(pb.filter("slug={:slug}", { slug: params.projectSlug }), {
-			fields: "collectionId,id,slug,logo,coverImg,coverVideoUrl",
+			fields: "collectionId,id,name,slug,logo,coverImg,coverVideoUrl",
 		}),
 	]);
 

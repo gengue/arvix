@@ -1,11 +1,8 @@
 import { AuthPage } from "@refinedev/core";
 import type { Route } from "./+types/login";
 
-export function meta({}: Route.MetaArgs) {
-	return [
-		{ title: "Usuarios" },
-		{ name: "description", content: "Administrar usuarios" },
-	];
+export function meta(_params: Route.MetaArgs) {
+	return [{ title: "Usuarios" }, { name: "description", content: "Administrar usuarios" }];
 }
 export default function Login() {
 	return (

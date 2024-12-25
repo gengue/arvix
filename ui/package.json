@@ -22,6 +22,7 @@
 		"pocketbase": "^0.24.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"react-img-mapper": "^v2.0.0-alpha.0",
 		"react-router": "^7.1.0",
 		"refine-pocketbase": "^0.2.0"
 	},

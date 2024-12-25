@@ -6,7 +6,8 @@ import type { Route } from "./+types/spin";
 import type { LoaderData } from "./masterplan-layout";
 
 //TODO: rename backVideo to backwardVideo
-//TODO: disable button where is playing
+//TODO: remove flash from intro video
+//TODO: url params should render a specific spin
 export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const data = useRouteLoaderData<LoaderData>("routes/masterplan-layout");
 	const { videoRef, isPlaying, goForward, goBackward, poster } = useSpin(data);

@@ -22,8 +22,8 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 					opacity: poster ? (isPlaying ? 1 : 0) : 1,
 				}}
 			>
-				Tu navegador no soporta las características necesarias. Use un navegador moderno como Google Chrome, Mozilla
-				Firefox, Safari o Microsoft Edge.
+				Tu navegador no soporta las características necesarias. Use un navegador moderno como Google Chrome,
+				Mozilla Firefox, Safari o Microsoft Edge.
 			</video>
 			{poster && (
 				<InteractiveImage

@@ -13,9 +13,11 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 		pb.collection("clients").getFirstListItem(pb.filter("slug={:slug}", { slug: params.developerSlug }), {
 			fields: "id",
 		}),
-		await pb.collection("projects").getFirstListItem(pb.filter("slug={:slug}", { slug: params.projectSlug }), {
-			fields: "collectionId,id,name,slug,logo,coverImg,coverVideoUrl",
-		}),
+		await pb
+			.collection("projects")
+			.getFirstListItem(pb.filter("slug={:slug}", { slug: params.projectSlug }), {
+				fields: "collectionId,id,name,slug,logo,coverImg,coverVideoUrl",
+			}),
 	]);
 
 	if (!dev) {

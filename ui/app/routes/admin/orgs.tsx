@@ -4,10 +4,7 @@ import { CatchAllNavigate } from "@refinedev/react-router";
 import type { Route } from "./+types/orgs";
 
 export function meta({}: Route.MetaArgs) {
-	return [
-		{ title: "Usuarios" },
-		{ name: "description", content: "Administrar usuarios" },
-	];
+	return [{ title: "Usuarios" }, { name: "description", content: "Administrar usuarios" }];
 }
 
 export default function OrganizationsList() {
@@ -24,10 +21,7 @@ export default function OrganizationsList() {
 	}
 
 	return (
-		<Authenticated
-			key="organizations"
-			fallback={<CatchAllNavigate to="/admin/login" />}
-		>
+		<Authenticated key="organizations" fallback={<CatchAllNavigate to="/admin/login" />}>
 			<ul>
 				{organizations.map((product) => (
 					<li key={product.id}>

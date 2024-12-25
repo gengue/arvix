@@ -39,7 +39,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 			.map((i) => {
 				if (i.backVideo) i.backVideo = pb.files.getURL(i, i.backVideo);
 				if (i.forwardVideo) i.forwardVideo = pb.files.getURL(i, i.forwardVideo);
-				i.img = pb.files.getURL(i, i.img);
+				i.img = pb.files.getURL(i, i.img, { thumb: "1920x1080" });
 				return i;
 			});
 

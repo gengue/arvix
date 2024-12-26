@@ -2,6 +2,9 @@
 FROM node:22-alpine AS ui-builder
 WORKDIR /app/ui
 
+ARG VITE_PB_URL
+ENV VITE_PB_URL $VITE_PB_URL
+
 # Install dependencies
 COPY ui/package*.json ./
 RUN npm install --force

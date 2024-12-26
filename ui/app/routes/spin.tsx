@@ -1,17 +1,17 @@
 import { Button } from "@nextui-org/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import type { Map as MapType } from "react-img-mapper";
 import { useRouteLoaderData } from "react-router";
 import useSpin from "~/spin/useSpin";
 import type { Route } from "./+types/spin";
 import type { LoaderData } from "./masterplan-layout";
-import type { Map as MapType } from "react-img-mapper";
 
 export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const data = useRouteLoaderData<LoaderData>("routes/masterplan-layout");
 	const { videoRef, isPlaying, goForward, goBackward, poster, meta } = useSpin(data);
 
 	return (
-		<main>
+		<>
 			<video
 				ref={videoRef}
 				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen z-[-1] m-0 left-2/4 top-2/4"
@@ -25,57 +25,48 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 				Tu navegador no soporta las características necesarias. Use un navegador moderno como Google Chrome,
 				Mozilla Firefox, Safari o Microsoft Edge.
 			</video>
-			{poster && (
-				<InteractiveImage
-					src={poster}
-					map={meta}
-					style={{
-						opacity: poster ? (!isPlaying ? 1 : 0) : 0,
-					}}
-				/>
-			)}
+			{poster && <InteractiveImage src={poster} map={meta} isActive={!isPlaying} />}
 
-			<div className="absolute-center w-full flex justify-between z-30">
-				<Button
-					isIconOnly
-					aria-label="Girar a la izquierda"
-					className="text-white backdrop-blur-xl bg-black/60"
-					radius="full"
-					variant="flat"
-					onPress={goBackward}
-					isDisabled={isPlaying}
-				>
-					<ArrowLeft />
-				</Button>
-				<Button
-					isIconOnly
-					aria-label="Girar a la derecha"
-					className="text-white backdrop-blur-xl bg-black/60"
-					radius="full"
-					variant="flat"
-					onPress={goForward}
-					isDisabled={isPlaying}
-				>
-					<ArrowRight />
-				</Button>
-			</div>
-		</main>
+			<Button
+				isIconOnly
+				aria-label="Girar a la izquierda"
+				className="absolute left-2 top-[50%] z-30 brand-base"
+				radius="full"
+				variant="flat"
+				onPress={goBackward}
+				isDisabled={isPlaying}
+			>
+				<ArrowLeft />
+			</Button>
+			<Button
+				isIconOnly
+				aria-label="Girar a la derecha"
+				className="absolute right-2 top-[50%] z-30 brand-base"
+				radius="full"
+				variant="flat"
+				onPress={goForward}
+				isDisabled={isPlaying}
+			>
+				<ArrowRight />
+			</Button>
+		</>
 	);
 }
 
 type Props = {
 	src: string;
 	map: MapType;
+	isActive?: boolean;
 	style?: React.CSSProperties;
 };
-function InteractiveImage({ src, map, style }: Props) {
+function InteractiveImage({ src, map, isActive }: Props) {
 	return (
 		<>
 			<img
 				src={src}
 				alt="Next frame"
 				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen m-0 left-2/4 top-2/4"
-				style={style}
+				style={{ opacity: isActive ? 1 : 0 }}
 			/>
 			{map && (
 				<svg
@@ -90,48 +81,51 @@ function InteractiveImage({ src, map, style }: Props) {
 					xmlSpace="preserve"
 					preserveAspectRatio="xMidYMid slice"
 				>
-					{map.areas.map((area) => {
-						if (area.shape === "poly") {
-							return (
-								<polygon
-									key={area.id}
-									fill={area.fillColor}
-									stroke={area.strokeColor}
-									points={area.coords.map((coord, i) => (i % 2 === 0 ? `${coord},` : coord)).join(" ")}
-									className="opacity-0 z-20 hover:cursor-pointer hover:opacity-100"
-								/>
-							);
-						}
-						if (area.shape === "circle") {
-							return (
-								<circle
-									key={area.id}
-									fill={area.fillColor}
-									stroke={area.strokeColor}
-									strokeWidth={2}
-									cx={area.coords[0]}
-									cy={area.coords[1]}
-									r={area.coords[2]}
-									className="opacity-0 z-30 hover:cursor-pointer hover:opacity-100"
-								/>
-							);
-						}
-						if (area.shape === "rect") {
-							return (
-								<rect
-									key={area.id}
-									fill={area.fillColor}
-									stroke={area.strokeColor}
-									x={area.coords[0]}
-									y={area.coords[1]}
-									width={area.coords[2]}
-									height={area.coords[3]}
-									className="opacity-0 z-20 absolute hover:cursor-pointer hover:opacity-100"
-								/>
-							);
-						}
-						return null;
-					})}
+					<g className="group">
+						{map.areas.map((area) => {
+							if (area.shape === "poly") {
+								return (
+									<polygon
+										key={area.id}
+										fill={area.fillColor}
+										stroke={area.strokeColor}
+										points={area.coords.map((coord, i) => (i % 2 === 0 ? `${coord},` : coord)).join(" ")}
+										className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 group"
+									/>
+								);
+							}
+							if (area.shape === "circle") {
+								return (
+									<circle
+										key={area.id}
+										fill={area.fillColor}
+										stroke={area.strokeColor}
+										strokeWidth={2}
+										cx={area.coords[0]}
+										cy={area.coords[1]}
+										r={area.coords[2]}
+										className="z-30 cursor-pointer transition-opacity ease-in-out"
+										style={{ opacity: isActive ? 1 : 0 }}
+									/>
+								);
+							}
+							if (area.shape === "rect") {
+								return (
+									<rect
+										key={area.id}
+										fill={area.fillColor}
+										stroke={area.strokeColor}
+										x={area.coords[0]}
+										y={area.coords[1]}
+										width={area.coords[2]}
+										height={area.coords[3]}
+										className="opacity-0 z-20 absolute group-hover:cursor-pointer hover:opacity-100"
+									/>
+								);
+							}
+							return null;
+						})}
+					</g>
 				</svg>
 			)}
 		</>

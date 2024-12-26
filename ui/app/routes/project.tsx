@@ -44,7 +44,7 @@ export default function ProjectStartPage({ loaderData }: Route.ComponentProps) {
 						<Button
 							as={Link}
 							to="spin"
-							className="text-white backdrop-blur-xl bg-black/60 p-8"
+							className="p-8 brand-base"
 							color="default"
 							radius="full"
 							size="lg"

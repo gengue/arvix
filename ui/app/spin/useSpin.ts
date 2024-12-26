@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import React from "react";
 import type { Map as MapType } from "react-img-mapper";
-import useDebouce from "~/hooks/useDebouce";
+import useDebounce from "~/hooks/useDebounce";
 import type { SpinRecord } from "~/lib/pb.types";
 import type { LoaderData } from "~/routes/masterplan-layout";
 
@@ -62,7 +62,7 @@ export default function useSpin(data?: LoaderData) {
 		};
 	}, [state.type]);
 
-	const poster = useDebouce(state.spin?.img, 400);
+	const poster = useDebounce(state.spin?.img, 400);
 
 	return {
 		goForward: () => dispatch({ type: "forward" }),

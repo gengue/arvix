@@ -50,4 +50,4 @@ EXPOSE 8090
 ENV GO_ENV=production
 
 # Run the application
-CMD ["./main", "serve"]
+ENTRYPOINT ["./main", "serve", "--http=0.0.0.0:8090"]

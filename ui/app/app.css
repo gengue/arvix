@@ -53,10 +53,6 @@ body {
   @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-[56.25vw] min-h-screen min-w-[177.77vh];
 }
 
-.cta-border {
-  @apply bg-[linear-gradient(#050713,#050713),linear-gradient(to_right,#F54180,#338EF7)] border-[solid] border-transparent;
-}
-
 .brand-base {
   @apply text-white backdrop-blur-xl bg-black/60 border-default-100/30 border-1;
 }

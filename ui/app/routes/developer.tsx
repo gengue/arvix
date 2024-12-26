@@ -31,7 +31,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 				project.logo = pb.files.getURL(project, project?.logo, { thumb: "200x0" });
 			}
 			if (project.coverImg) {
-				project.coverImg = pb.files.getURL(project, project.coverImg, { thumb: "300x0" });
+				project.coverImg = pb.files.getURL(project, project.coverImg, { thumb: "600x0" });
 			}
 			return project;
 		});

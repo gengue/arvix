@@ -41,19 +41,20 @@ export default function ProjectStartPage({ loaderData }: Route.ComponentProps) {
 				<div className="absolute bottom-28 left-0 right-0 flex justify-center  z-20">
 					<div className="grid gap-8">
 						<img src={logo} alt="Aurora Logo" className="h-42 my-4" />
-						<Button
-							as={Link}
-							to="spin"
-							className="p-8 brand-base"
-							color="default"
-							radius="full"
-							size="lg"
-							variant="flat"
-							// style={{ boxShadow: "rgba(191, 151, 255, 0.44) 0px 0px 4px inset" }}
-						>
-							<span className="text-lg font-medium">Entrar</span>
-							<ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-						</Button>
+						<div className="relative mx-auto max-w-md rounded-full bg-gradient-to-tr from-pink-300 to-blue-300 p-0.5 shadow-xl">
+							<Button
+								as={Link}
+								to="spin"
+								className="p-8 bg-black/90 text-white"
+								color="default"
+								radius="full"
+								size="lg"
+								variant="flat"
+							>
+								<span className="text-lg font-medium">Entrar</span>
+								<ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+							</Button>
+						</div>
 					</div>
 				</div>
 			</VimeoBackgroundContainer>

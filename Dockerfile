@@ -44,7 +44,7 @@ COPY --from=ui-builder /app/ui/build ./ui/build
 COPY migrations ./migrations
 
 # Expose the port your application runs on
-EXPOSE 8080
+EXPOSE 8090
 
 # Set environment variables
 ENV GO_ENV=production

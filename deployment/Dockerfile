@@ -1,11 +1,9 @@
-# Build UI stage
 FROM node:22-alpine AS ui-builder
 WORKDIR /app/ui
 
 ARG VITE_PB_URL
 ENV VITE_PB_URL $VITE_PB_URL
 
-# Install dependencies
 COPY ui/package*.json ./
 RUN npm install --force
 
@@ -18,7 +16,6 @@ RUN npm run build
 FROM golang:1.23-alpine AS go-builder
 WORKDIR /app
 
-# Install build dependencies
 RUN apk add --no-cache gcc musl-dev
 
 # Copy Go module files
@@ -46,10 +43,8 @@ COPY --from=ui-builder /app/ui/build ./ui/build
 # Copy any additional required files (like migrations)
 COPY migrations ./migrations
 
-# Expose the port your application runs on
 EXPOSE 8090
 
-# Set environment variables
 ENV GO_ENV=production
 
 # Run the application

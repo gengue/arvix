@@ -1,0 +1,32 @@
+# Save this file as /etc/caddy/Caddyfile
+
+arvix.gagm.live {
+    reverse_proxy 127.0.0.1:8090 {
+        header_up X-Forwarded-Host {host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    encode gzip zstd
+    header {
+        # Security headers
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "no-referrer"
+        Permissions-Policy "interest-cohort=()"
+    }
+
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 10mb
+            roll_keep 10
+            roll_keep_for 720h
+        }
+    }
+
+    tls genesisdaft@gmail.com
+
+    request_body {
+        max_size 100mb
+    }
+}

@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: ./../
+      dockerfile: deployment/Dockerfile
+    ports:
+      - "8090:8090"
+    environment:
+      - GO_ENV=production
+      - VITE_PB_URL=${VITE_PB_URL}
+    volumes:
+      - ./../migrations:/app/migrations
+      - ./../pb_data:/app/pb_data
+    restart: unless-stopped

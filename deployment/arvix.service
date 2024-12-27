@@ -1,0 +1,15 @@
+[Unit]
+Description=Arvix server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+ExecStart=/home/genesis/arvix/main serve --http=0.0.0.0:8090
+Restart=always
+User=genesis
+Group=genesis
+Environment=GO_ENV=production
+WorkingDirectory=/home/genesis/arvix
+
+[Install]
+WantedBy=multi-user.target

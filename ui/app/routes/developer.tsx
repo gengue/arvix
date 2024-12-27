@@ -51,20 +51,25 @@ export default function DeveloperPage({ loaderData }: Route.ComponentProps) {
 			<h2 className="text-2xl my-8">Proyectos</h2>
 			<nav className="flex flex-col flex-wrap gap-6">
 				{expand?.projects_via_client?.map((project) => (
-					<Link to={project.slug} viewTransition key={project.id}>
-						<Card isFooterBlurred className="w-[300px] h-[300px] border-none">
-							<CardHeader className="absolute z-10 top-0 flex-col items-start bg-white">
-								<h4 className="text-black font-medium text-2xl">{project.name}</h4>
-							</CardHeader>
-							<Image
-								removeWrapper
-								isZoomed
-								alt={project.name}
-								className="z-0 w-full h-full object-cover"
-								src={project.coverImg}
-							/>
-						</Card>
-					</Link>
+					<Card
+						isFooterBlurred
+						className="w-[300px] h-[300px] border-none w-fit"
+						as={Link}
+						viewTransition
+						key={project.id}
+						to={project.slug}
+					>
+						<CardHeader className="absolute z-10 top-0 flex-col items-start bg-white">
+							<h4 className="text-black font-medium text-2xl">{project.name}</h4>
+						</CardHeader>
+						<Image
+							removeWrapper
+							isZoomed
+							alt={project.name}
+							className="z-0 w-full h-full object-cover"
+							src={project.coverImg}
+						/>
+					</Card>
 				))}
 			</nav>
 		</main>

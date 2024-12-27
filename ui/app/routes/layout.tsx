@@ -1,9 +1,16 @@
 import { NextUIProvider } from "@nextui-org/react";
-import { Outlet } from "react-router";
+import { Outlet, useHref, useNavigate, type NavigateOptions } from "react-router";
+
+declare module "@react-types/shared" {
+	interface RouterConfig {
+		routerOptions: NavigateOptions;
+	}
+}
 
 export default function MainLayout() {
+	const navigate = useNavigate();
 	return (
-		<NextUIProvider>
+		<NextUIProvider navigate={navigate} useHref={useHref}>
 			<Outlet />
 		</NextUIProvider>
 	);

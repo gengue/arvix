@@ -85,6 +85,7 @@ export default function useSpin(data?: LoaderData) {
 		isPlaying,
 		poster: getFinalPoster(state.type),
 		meta: getFinalMeta(state.type),
+		type: state.type,
 	};
 }
 

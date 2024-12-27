@@ -1,8 +1,8 @@
 import { Button } from "@nextui-org/button";
-import { Tooltip } from "@nextui-org/react";
+import { cn, useDisclosure } from "@nextui-org/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRouteLoaderData } from "react-router";
-import type { MapMeta } from "~/global";
+import { InteractiveImage } from "~/spin/interactive-image";
 import useSpin from "~/spin/useSpin";
 import type { Route } from "./+types/spin";
 import type { LoaderData } from "./masterplan-layout";
@@ -13,7 +13,17 @@ export function meta(params: Route.MetaArgs) {
 
 export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const data = useRouteLoaderData<LoaderData>("routes/masterplan-layout");
-	const { videoRef, isPlaying, poster, meta, goForward, goBackward, enter } = useSpin(data);
+	const { videoRef, isPlaying, poster, meta, type, goForward, goBackward, enter } = useSpin(data);
+	const {
+		isOpen: floorMenuIsOpen,
+		onOpen: onOpenFloorMenu,
+		onOpenChange: onOpenFloorMenuChange,
+	} = useDisclosure();
+
+	const handleOnClickStructure = () => {
+		enter();
+		onOpenFloorMenu();
+	};
 
 	return (
 		<>
@@ -30,7 +40,91 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 				Tu navegador no soporta las características necesarias. Use un navegador moderno como Google Chrome,
 				Mozilla Firefox, Safari o Microsoft Edge.
 			</video>
-			{poster && <InteractiveImage src={poster} map={meta} isActive={!isPlaying} onClick={enter} />}
+			{poster && (
+				<InteractiveImage src={poster} map={meta} isActive={!isPlaying} onClick={handleOnClickStructure} />
+			)}
+			{!floorMenuIsOpen && type !== "enter" && (
+				<SpinButtons isPlaying={isPlaying} goForward={goForward} goBackward={goBackward} />
+			)}
+
+			{!floorMenuIsOpen && type === "enter" && (
+				<Button
+					onPress={onOpenFloorMenu}
+					className="cta text-md fixed top-20 right-3 z-30"
+					radius="full"
+					color="default"
+					variant="flat"
+				>
+					<ArrowLeft />
+					Cambiar planta
+				</Button>
+			)}
+
+			<div
+				className="fixed top-16 z-20 py-3 px-2 gap-1 flex flex-col items-center rounded-full text-white backdrop-blur-xl bg-black/40 border-default-100/30 border-1 transition-[right] duration-800"
+				style={{ right: floorMenuIsOpen && !isPlaying ? "0.3rem" : "-100%" }}
+			>
+				<Button
+					isIconOnly
+					aria-label="Like"
+					color="secondary"
+					className="text-lg text-default-100 cta"
+					radius="full"
+					onPress={onOpenFloorMenuChange}
+				>
+					<ArrowRight />
+				</Button>
+				{[
+					"AS3",
+					"26",
+					"25",
+					"24",
+					"23",
+					"22",
+					"21",
+					"20",
+					"19",
+					"18",
+					"17",
+					"16",
+					"15",
+					"14",
+					"13",
+					"12",
+					"11",
+					"10",
+					"9",
+					"8",
+					"7",
+					"6",
+					"AS2",
+					"AS1",
+				].map((i) => (
+					<Button
+						key={i}
+						className={cn(
+							"text-lg text-default-100",
+							"AS3" === i && "border-default-100/30 bg-default/30 border-1",
+						)}
+						radius="full"
+						size="md"
+						variant="light"
+					>
+						{i}
+					</Button>
+				))}
+			</div>
+		</>
+	);
+}
+
+function SpinButtons({
+	isPlaying,
+	goForward,
+	goBackward,
+}: { isPlaying: boolean; goForward: () => void; goBackward: () => void }) {
+	return (
+		<>
 			<Button
 				isIconOnly
 				aria-label="Girar a la izquierda"
@@ -53,101 +147,6 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 			>
 				<ArrowRight />
 			</Button>
-		</>
-	);
-}
-
-type Props = {
-	src: string;
-	map: MapMeta;
-	isActive: boolean;
-	onClick: () => void;
-};
-function InteractiveImage({ src, map, isActive, onClick }: Props) {
-	return (
-		<>
-			<img
-				src={src}
-				alt="Next frame"
-				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen m-0 left-2/4 top-2/4"
-				style={{ opacity: isActive ? 1 : 0 }}
-			/>
-			{map && (
-				<svg
-					version="1.1"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 1920 1080"
-					className="z-20 absolute top-0 left-0 w-screen h-screen overflow-hidden align-middle"
-					x="0px"
-					y="0px"
-					aria-label="Interactive map"
-					role="img"
-					xmlSpace="preserve"
-					preserveAspectRatio="xMidYMid slice"
-				>
-					<g className="group">
-						{map.areas.map((area) => {
-							if (area.shape === "poly") {
-								return (
-									<Tooltip key={area.id} content={area.label}>
-										{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-										<polygon
-											key={area.id}
-											fill={area.fillColor}
-											stroke={area.strokeColor}
-											points={area.coords.map((coord, i) => (i % 2 === 0 ? `${coord},` : coord)).join(" ")}
-											className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 group"
-											onClick={onClick}
-										/>
-									</Tooltip>
-								);
-							}
-							if (area.shape === "path") {
-								return (
-									<path
-										key={area.id}
-										fill={area.fillColor}
-										stroke={area.strokeColor}
-										d={area.d}
-										className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 group"
-										style={{ visibility: isActive ? "visible" : "hidden" }}
-									/>
-								);
-							}
-							if (area.shape === "circle") {
-								return (
-									<circle
-										key={area.id}
-										fill={area.fillColor}
-										stroke={area.strokeColor}
-										strokeWidth={2}
-										cx={area.coords[0]}
-										cy={area.coords[1]}
-										r={area.coords[2]}
-										className="z-30 cursor-pointer"
-										style={{ visibility: isActive ? "visible" : "hidden" }}
-									/>
-								);
-							}
-							if (area.shape === "rect") {
-								return (
-									<rect
-										key={area.id}
-										fill={area.fillColor}
-										stroke={area.strokeColor}
-										x={area.coords[0]}
-										y={area.coords[1]}
-										width={area.coords[2]}
-										height={area.coords[3]}
-										className="opacity-0 z-20 absolute group-hover:cursor-pointer hover:opacity-100"
-									/>
-								);
-							}
-							return null;
-						})}
-					</g>
-				</svg>
-			)}
 		</>
 	);
 }

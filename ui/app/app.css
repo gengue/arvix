@@ -62,9 +62,9 @@ body {
 }
 
 .cta {
-  @apply text-lg font-bold bg-black/90 text-white dark:bg-transparent dark:text-black;
+  @apply text-lg font-semibold bg-black/90 text-white dark:bg-transparent dark:text-black;
 }
 
 .cta-smoothie {
-  @apply font-bold text-black bg-default/40 rounded-full p-2;
+  @apply font-semibold text-black bg-default/40 rounded-full p-2;
 }

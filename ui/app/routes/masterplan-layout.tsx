@@ -10,8 +10,8 @@ import {
 	NavbarMenuToggle,
 } from "@nextui-org/react";
 import { cn } from "@nextui-org/react";
-import React from "react";
-import { Outlet } from "react-router";
+import React, { useMemo } from "react";
+import { Outlet, useLocation } from "react-router";
 import { data } from "react-router";
 import pb from "~/lib/pb";
 import type { ProjectsResponse, StructuresRecord, TransitionsRecord } from "~/lib/pb.types";
@@ -85,19 +85,30 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 export type LoaderData = Awaited<ReturnType<typeof clientLoader>>;
 
-export default function MasterplanLayout({ loaderData }: Route.ComponentProps) {
+export default function MasterplanLayout({ loaderData, params }: Route.ComponentProps) {
 	return (
 		<main className="w-screen h-screen relative z-10 bg-slate-950">
-			<Menu />
+			<Menu params={params} />
 			<Outlet />
 		</main>
 	);
 }
 
-const menuItems = ["Intro", "El edificio", "Plantas", "Amenidades", "Ubicación", "Contacto"];
-
-export function Menu(props: NavbarProps) {
+export function Menu(props: NavbarProps & { params: Route.ComponentProps["params"] }) {
 	const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+	const location = useLocation();
+
+	const menuItems = useMemo(() => {
+		const base = `/${props.params.developerSlug}/${props.params.projectSlug}`;
+		return [
+			{ label: "Intro", href: `${base}/` },
+			{ label: "El edificio", href: `${base}/spin` },
+			{ label: "Plantas", href: `${base}/#floors` },
+			{ label: "Amenidades", href: `${base}/#amenities` },
+			{ label: "Ubicación", href: `${base}/#location` },
+			{ label: "Contacto", href: `${base}/#contact` },
+		];
+	}, [props.params]);
 
 	return (
 		<Navbar
@@ -128,9 +139,9 @@ export function Menu(props: NavbarProps) {
 		>
 			<NavbarContent justify="center" className="">
 				{menuItems.map((item) => (
-					<NavbarItem key={item} isActive={item === "El edificio"}>
-						<Link className={cn("text-default-200 text-md")} href="#" size="sm">
-							{item}
+					<NavbarItem key={item.href} isActive={location.pathname === item.href}>
+						<Link className={cn("text-default-200 text-md")} href={item.href} size="sm">
+							{item.label}
 						</Link>
 					</NavbarItem>
 				))}
@@ -140,9 +151,9 @@ export function Menu(props: NavbarProps) {
 
 			<NavbarMenu className="top-[calc(var(--navbar-height)_-_1px)] max-h-fit bg-black/60 pb-6 pt-6 shadow-medium backdrop-blur-xl">
 				{menuItems.map((item, index) => (
-					<NavbarMenuItem key={`${item}`}>
-						<Link className="mb-2 w-full text-default-200" href="#" size="md">
-							{item}
+					<NavbarMenuItem key={item.href}>
+						<Link className="mb-2 w-full text-default-200" href={item.href} size="md">
+							{item.label}
 						</Link>
 						{index < menuItems.length - 1 && <Divider className="opacity-50" />}
 					</NavbarMenuItem>

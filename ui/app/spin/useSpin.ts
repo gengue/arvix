@@ -1,22 +1,23 @@
 import { useEffect, useReducer, useState } from "react";
 import React from "react";
-import type { Map as MapType } from "react-img-mapper";
+import type { MapMeta } from "~/global";
 import useDebounce from "~/hooks/useDebounce";
-import type { SpinRecord } from "~/lib/pb.types";
+import type { StructuresRecord, TransitionsRecord } from "~/lib/pb.types";
 import type { LoaderData } from "~/routes/masterplan-layout";
 
 export default function useSpin(data?: LoaderData) {
 	const [state, dispatch] = useReducer(reducer, {
-		type: "intro",
-		transitionVideo: data?.intro?.forwardVideo || "",
+		type: data?.intro?.video || data?.intro?.img ? "intro" : "forward",
+		transitionVideo: (data?.intro?.video || data?.spin?.[0]?.forwardVideo) ?? "",
 		intro: data?.intro,
-		all: arrayToObject(data?.spin || []),
-		spinId: 0,
+		allSpins: data?.spin || [],
+		allStructures: data?.structures || {},
+		transitionId: 0,
 	});
 	const [isPlaying, setIsPlaying] = useState(false);
 	const videoRef = React.useRef<HTMLVideoElement>(null);
 
-	usePreloadMediaResources(data?.spin);
+	usePreloadMediaResources(data?.intro, data?.spin);
 
 	useEffect(() => {
 		const playVideo = async (videoEle: HTMLVideoElement) => {
@@ -45,12 +46,14 @@ export default function useSpin(data?: LoaderData) {
 		const videoElement = videoRef.current;
 		if (!videoElement) return;
 
-		// const handlePlaying = () => setIsPlaying(true);
+		// const handlePlaying = () => {};
 		const handleEnded = () => {
 			if (state.type === "intro") {
 				dispatch({ type: "forward" });
+				setTimeout(() => setIsPlaying(false), 500);
+			} else {
+				setIsPlaying(false);
 			}
-			setIsPlaying(false);
 		};
 
 		// videoElement.addEventListener("playing", handlePlaying);
@@ -64,13 +67,24 @@ export default function useSpin(data?: LoaderData) {
 
 	const poster = useDebounce(state.spin?.img, 400);
 
+	const getFinalPoster = (type: TransitionState["type"]) => {
+		if (type === "enter") return state.struct?.img;
+		if (type === "intro") return data?.intro?.img;
+		return poster ?? state.spin?.img;
+	};
+
+	const getFinalMeta = (type: TransitionState["type"]) => {
+		return (type === "enter" ? state.struct?.meta : state.spin?.meta) as MapMeta;
+	};
+
 	return {
 		goForward: () => dispatch({ type: "forward" }),
 		goBackward: () => dispatch({ type: "back" }),
+		enter: () => dispatch({ type: "enter" }),
 		videoRef,
 		isPlaying,
-		poster: state.type === "intro" ? state.spin?.img : poster,
-		meta: state.spin?.meta as MapType,
+		poster: getFinalPoster(state.type),
+		meta: getFinalMeta(state.type),
 	};
 }
 
@@ -78,34 +92,36 @@ export default function useSpin(data?: LoaderData) {
  * Main State Machine
  */
 
-type Motion = "intro" | "forward" | "back";
-type SpinState = {
+type Motion = "intro" | "forward" | "back" | "enter";
+type TransitionState = {
 	type: Motion;
-	transitionVideo: string;
-	all: Record<number, SpinRecord>;
-	spinId: number;
-	intro?: SpinRecord;
-	spin?: SpinRecord;
+	allSpins: TransitionsRecord[]; // come from the API
+	allStructures: Record<string, StructuresRecord>; // come from the API
+	transitionVideo: string; // current video
+	transitionId: number; // current transition index
+	intro?: Intro; // welcome video
+	spin?: TransitionsRecord; // current spin (exterior of the structure)
+	struct?: StructuresRecord; // Current structure (interior of the structure)
 };
 
 type SpinAction = { type: Motion };
 
-function reducer(state: SpinState, action: SpinAction): SpinState {
-	const len = Object.keys(state.all).length;
+function reducer(state: TransitionState, action: SpinAction): TransitionState {
+	const len = Object.keys(state.allSpins).length;
 	if (action.type === "forward") {
-		let spinId = (state.spinId + 1) % len;
-		let spin = state.all[spinId];
+		let index = (state.transitionId + 1) % len;
+		let spin = state.allSpins[index];
 		let transitionVideo = state?.spin?.forwardVideo;
 
 		if (state.type === "intro") {
-			spinId = 0;
-			spin = state.all[spinId];
-			transitionVideo = state.intro?.forwardVideo;
+			index = 0;
+			spin = state.allSpins[index];
+			transitionVideo = state.intro?.video;
 		}
 
 		return {
 			...state,
-			spinId,
+			transitionId: index,
 			transitionVideo: transitionVideo || "",
 			spin,
 			type: action.type,
@@ -113,14 +129,23 @@ function reducer(state: SpinState, action: SpinAction): SpinState {
 	}
 
 	if (action.type === "back") {
-		const spinId = (state.spinId - 1 + len) % len;
-		const spin = state.all[spinId];
+		const index = (state.transitionId - 1 + len) % len;
+		const spin = state.allSpins[index];
 
 		return {
 			...state,
-			spinId,
-			transitionVideo: spin?.backVideo || "",
+			transitionId: index,
+			transitionVideo: spin?.backwardVideo || "",
 			spin,
+			type: action.type,
+		};
+	}
+
+	if (action.type === "enter") {
+		return {
+			...state,
+			transitionVideo: state?.spin?.topVideo || "",
+			struct: state.allStructures["as3" as keyof typeof state.allStructures],
 			type: action.type,
 		};
 	}
@@ -132,39 +157,39 @@ function reducer(state: SpinState, action: SpinAction): SpinState {
 	};
 }
 
-/**
- * Utility
- */
-function arrayToObject(arr: SpinRecord[]) {
-	return arr.reduce(
-		(acc, item, index) => {
-			acc[index] = item;
-			return acc;
-		},
-		{} as Record<number, SpinRecord>,
-	);
+interface Intro {
+	video?: string;
+	img?: string;
 }
 
-function usePreloadMediaResources(spin: SpinRecord[] | undefined) {
+function usePreloadMediaResources(intro?: Intro, spin?: TransitionsRecord[]) {
+	const loaded = React.useRef(0);
 	useEffect(() => {
+		if (!intro && !spin) return;
+
+		const preload = (imgSrc?: string, videoSrc?: string) => {
+			if (videoSrc) {
+				const videoEle = document.createElement("video");
+				videoEle.src = videoSrc;
+				videoEle.preload = "auto";
+				loaded.current += 1;
+			}
+			if (imgSrc) {
+				const img = new Image();
+				img.src = imgSrc;
+				loaded.current += 1;
+			}
+		};
+
+		if (intro) {
+			preload(intro.video, intro.img);
+		}
+
 		if (spin) {
-			// preload all videos
 			for (const item of spin) {
-				if (item.img) {
-					const img = new Image();
-					img.src = item.img;
-				}
-				if (item.backVideo) {
-					const backVideo = document.createElement("video");
-					backVideo.src = item.backVideo;
-					backVideo.preload = "auto";
-				}
-				if (item.forwardVideo) {
-					const forwardVideo = document.createElement("video");
-					forwardVideo.src = item.forwardVideo;
-					forwardVideo.preload = "auto";
-				}
+				preload(item.backwardVideo, item.img);
+				preload(item.forwardVideo, item.img);
 			}
 		}
-	}, [spin]);
+	}, [intro, spin]);
 }

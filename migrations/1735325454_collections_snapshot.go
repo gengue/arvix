@@ -1344,6 +1344,47 @@ func init() {
 					},
 					{
 						"hidden": false,
+						"id": "file3814774255",
+						"maxSelect": 1,
+						"maxSize": 10000000,
+						"mimeTypes": [
+							"video/ogg",
+							"video/quicktime",
+							"video/mp4",
+							"video/webm",
+							"video/x-flv"
+						],
+						"name": "introTransitionVideo",
+						"presentable": false,
+						"protected": false,
+						"required": false,
+						"system": false,
+						"thumbs": [],
+						"type": "file"
+					},
+					{
+						"hidden": false,
+						"id": "file2099584818",
+						"maxSelect": 1,
+						"maxSize": 10000000,
+						"mimeTypes": [
+							"image/png",
+							"image/jpeg",
+							"image/webp",
+							"image/vnd.mozilla.apng"
+						],
+						"name": "introImg",
+						"presentable": false,
+						"protected": false,
+						"required": false,
+						"system": false,
+						"thumbs": [
+							"1920x1080"
+						],
+						"type": "file"
+					},
+					{
+						"hidden": false,
 						"id": "autodate2990389176",
 						"name": "created",
 						"onCreate": true,
@@ -1543,7 +1584,7 @@ func init() {
 					{
 						"hidden": false,
 						"id": "number4113142680",
-						"max": 20,
+						"max": null,
 						"min": 0,
 						"name": "order",
 						"onlyInt": true,
@@ -1568,7 +1609,9 @@ func init() {
 						"protected": false,
 						"required": true,
 						"system": false,
-						"thumbs": [],
+						"thumbs": [
+							"1920x1080"
+						],
 						"type": "file"
 					},
 					{
@@ -1592,7 +1635,7 @@ func init() {
 							"video/webm",
 							"video/quicktime"
 						],
-						"name": "backVideo",
+						"name": "backwardVideo",
 						"presentable": false,
 						"protected": false,
 						"required": false,
@@ -1612,6 +1655,26 @@ func init() {
 							"video/quicktime"
 						],
 						"name": "forwardVideo",
+						"presentable": false,
+						"protected": false,
+						"required": false,
+						"system": false,
+						"thumbs": [],
+						"type": "file"
+					},
+					{
+						"hidden": false,
+						"id": "file1086354427",
+						"maxSelect": 1,
+						"maxSize": 10000000,
+						"mimeTypes": [
+							"video/ogg",
+							"video/quicktime",
+							"video/mp4",
+							"video/webm",
+							"video/x-flv"
+						],
+						"name": "topVideo",
 						"presentable": false,
 						"protected": false,
 						"required": false,
@@ -1643,7 +1706,7 @@ func init() {
 				"id": "pbc_2648271836",
 				"indexes": [],
 				"listRule": "",
-				"name": "spin",
+				"name": "transitions",
 				"system": false,
 				"type": "base",
 				"updateRule": null,
@@ -2440,6 +2503,108 @@ func init() {
 				"type": "base",
 				"updateRule": null,
 				"viewRule": null
+			},
+			{
+				"createRule": null,
+				"deleteRule": null,
+				"fields": [
+					{
+						"autogeneratePattern": "[a-z0-9]{15}",
+						"hidden": false,
+						"id": "text3208210256",
+						"max": 15,
+						"min": 15,
+						"name": "id",
+						"pattern": "^[a-z0-9]+$",
+						"presentable": false,
+						"primaryKey": true,
+						"required": true,
+						"system": true,
+						"type": "text"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_991103706",
+						"hidden": false,
+						"id": "relation362203384",
+						"maxSelect": 1,
+						"minSelect": 0,
+						"name": "typology",
+						"presentable": false,
+						"required": true,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"cascadeDelete": false,
+						"collectionId": "pbc_4287529994",
+						"hidden": false,
+						"id": "relation534213990",
+						"maxSelect": 1,
+						"minSelect": 0,
+						"name": "feature",
+						"presentable": false,
+						"required": true,
+						"system": false,
+						"type": "relation"
+					},
+					{
+						"autogeneratePattern": "",
+						"hidden": false,
+						"id": "text494360628",
+						"max": 0,
+						"min": 0,
+						"name": "value",
+						"pattern": "",
+						"presentable": false,
+						"primaryKey": false,
+						"required": false,
+						"system": false,
+						"type": "text"
+					},
+					{
+						"hidden": false,
+						"id": "number4113142680",
+						"max": null,
+						"min": null,
+						"name": "order",
+						"onlyInt": false,
+						"presentable": false,
+						"required": false,
+						"system": false,
+						"type": "number"
+					},
+					{
+						"hidden": false,
+						"id": "autodate2990389176",
+						"name": "created",
+						"onCreate": true,
+						"onUpdate": false,
+						"presentable": false,
+						"system": false,
+						"type": "autodate"
+					},
+					{
+						"hidden": false,
+						"id": "autodate3332085495",
+						"name": "updated",
+						"onCreate": true,
+						"onUpdate": true,
+						"presentable": false,
+						"system": false,
+						"type": "autodate"
+					}
+				],
+				"id": "pbc_3902419839",
+				"indexes": [
+					"CREATE INDEX ` + "`" + `idx_Qm9HsmkByU` + "`" + ` ON ` + "`" + `typologyFeatures` + "`" + ` (\n  ` + "`" + `typology` + "`" + `,\n  ` + "`" + `feature` + "`" + `,\n  ` + "`" + `order` + "`" + `\n)"
+				],
+				"listRule": "",
+				"name": "typologyFeatures",
+				"system": false,
+				"type": "base",
+				"updateRule": null,
+				"viewRule": ""
 			}
 		]`
 

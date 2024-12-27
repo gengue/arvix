@@ -30,7 +30,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<Meta />
 				<Links />
-				<link rel="preconnect" href="/api" />
 			</head>
 			<body>
 				{children}

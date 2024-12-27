@@ -1,73 +1,85 @@
-import { Outlet } from "react-router";
-import { data } from "react-router";
-import type { Route } from "./+types/masterplan-layout";
-import pb from "~/lib/pb";
-import type { ProjectsResponse, SpinRecord } from "~/lib/pb.types";
 import type { NavbarProps } from "@nextui-org/react";
-import React from "react";
 import {
+	Divider,
+	Link,
 	Navbar,
 	NavbarContent,
 	NavbarItem,
-	NavbarMenuToggle,
-	Link,
-	Divider,
-	NavbarMenuItem,
 	NavbarMenu,
+	NavbarMenuItem,
+	NavbarMenuToggle,
 } from "@nextui-org/react";
 import { cn } from "@nextui-org/react";
+import React from "react";
+import { Outlet } from "react-router";
+import { data } from "react-router";
+import pb from "~/lib/pb";
+import type { ProjectsResponse, StructuresRecord, TransitionsRecord } from "~/lib/pb.types";
+import type { Route } from "./+types/masterplan-layout";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-	const dev = await pb
-		.collection("clients")
-		.getFirstListItem(pb.filter("slug={:slug}", { slug: params.developerSlug }), {
+	const [dev, record] = await Promise.all([
+		pb.collection("clients").getFirstListItem(pb.filter("slug={:slug}", { slug: params.developerSlug }), {
 			fields: "id",
-		});
+		}),
+		pb
+			.collection("projects")
+			.getFirstListItem<
+				ProjectsResponse<
+					unknown,
+					{ transitions_via_project: TransitionsRecord[]; structures_via_project: StructuresRecord[] }
+				>
+			>(pb.filter("slug={:slug}", { slug: params.projectSlug }), {
+				fields: "collectionId,id,name,coverImg,introTransitionVideo,introImg,expand",
+				expand: "transitions_via_project,structures_via_project",
+			}),
+	]);
 
 	if (!dev) {
 		throw data("Record not found", { status: 404 });
 	}
 
-	const record = await pb
-		.collection("projects")
-		.getFirstListItem<ProjectsResponse<unknown, { spin_via_project: SpinRecord[] }>>(
-			pb.filter("slug={:slug}", { slug: params.projectSlug }),
-			{
-				fields: "collectionId,id,name,coverImg,expand",
-				expand: "spin_via_project",
-			},
-		);
-
-	const { expand, ...project } = record;
+	let { expand, introTransitionVideo, introImg, ...project } = record;
 	if (project?.coverImg) {
 		project.coverImg = pb.files.getURL(project, project.coverImg);
 	}
+	if (introImg) {
+		introImg = pb.files.getURL(project, introImg, { thumb: "1920x1080" });
+	}
 
-	let spin: SpinRecord[] = [];
-	let intro: SpinRecord | undefined;
+	let spin: TransitionsRecord[] = [];
 
-	if (expand?.spin_via_project) {
-		const [first, ...rest] = expand.spin_via_project
+	if (expand?.transitions_via_project) {
+		spin = expand.transitions_via_project
 			.sort((a, b) => a?.order - b?.order)
 			.map((i) => {
-				if (i.backVideo) i.backVideo = pb.files.getURL(i, i.backVideo);
+				if (i.backwardVideo) i.backwardVideo = pb.files.getURL(i, i.backwardVideo);
 				if (i.forwardVideo) i.forwardVideo = pb.files.getURL(i, i.forwardVideo);
+				if (i.topVideo) i.topVideo = pb.files.getURL(i, i.topVideo);
 				i.img = pb.files.getURL(i, i.img, { thumb: "1920x1080" });
 				return i;
 			});
+	}
 
-		if (first.forwardVideo && !first.backVideo) {
-			intro = first;
-			spin = rest;
-		} else {
-			spin = [first, ...rest];
-		}
+	let structures: Record<string, StructuresRecord> = {};
+	if (expand?.structures_via_project) {
+		structures = expand.structures_via_project
+			.sort((a, b) => a?.order - b?.order)
+			.reduce((acc, curr) => {
+				if (curr.img) curr.img = pb.files.getURL(curr, curr.img, { thumb: "1920x1080" });
+				acc[curr.slug] = curr;
+				return acc;
+			}, structures);
 	}
 
 	return {
 		project,
-		intro,
+		intro: {
+			video: introTransitionVideo ? pb.files.getURL(record, introTransitionVideo) : "",
+			img: introImg,
+		},
 		spin,
+		structures,
 	};
 }
 
@@ -75,7 +87,7 @@ export type LoaderData = Awaited<ReturnType<typeof clientLoader>>;
 
 export default function MasterplanLayout({ loaderData }: Route.ComponentProps) {
 	return (
-		<main className="w-screen h-screen relative z-10">
+		<main className="w-screen h-screen relative z-10 bg-slate-950">
 			<Menu />
 			<Outlet />
 		</main>
@@ -96,12 +108,12 @@ export function Menu(props: NavbarProps) {
 				item: [
 					"flex",
 					"relative",
+					"rounded-full",
 					"md:h-full",
 					"items-center",
 					"hidden md:flex",
 					"data-[active=true]:bg-default/30",
 					"data-[active=true]:p-4",
-					"data-[active=true]:rounded-full",
 					"data-[active=true]:border-default-100/30",
 					"data-[active=true]:border-1",
 				],
@@ -117,7 +129,7 @@ export function Menu(props: NavbarProps) {
 			<NavbarContent justify="center" className="">
 				{menuItems.map((item) => (
 					<NavbarItem key={item} isActive={item === "El edificio"}>
-						<Link className="text-default-200 text-md" href="#" size="sm">
+						<Link className={cn("text-default-200 text-md")} href="#" size="sm">
 							{item}
 						</Link>
 					</NavbarItem>

@@ -1,7 +1,8 @@
 import { Button } from "@nextui-org/button";
+import { Tooltip } from "@nextui-org/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { Map as MapType } from "react-img-mapper";
 import { useRouteLoaderData } from "react-router";
+import type { MapMeta } from "~/global";
 import useSpin from "~/spin/useSpin";
 import type { Route } from "./+types/spin";
 import type { LoaderData } from "./masterplan-layout";
@@ -12,7 +13,7 @@ export function meta(params: Route.MetaArgs) {
 
 export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const data = useRouteLoaderData<LoaderData>("routes/masterplan-layout");
-	const { videoRef, isPlaying, goForward, goBackward, poster, meta } = useSpin(data);
+	const { videoRef, isPlaying, poster, meta, goForward, goBackward, enter } = useSpin(data);
 
 	return (
 		<>
@@ -29,8 +30,7 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 				Tu navegador no soporta las características necesarias. Use un navegador moderno como Google Chrome,
 				Mozilla Firefox, Safari o Microsoft Edge.
 			</video>
-			{poster && <InteractiveImage src={poster} map={meta} isActive={!isPlaying} />}
-
+			{poster && <InteractiveImage src={poster} map={meta} isActive={!isPlaying} onClick={enter} />}
 			<Button
 				isIconOnly
 				aria-label="Girar a la izquierda"
@@ -59,11 +59,11 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 
 type Props = {
 	src: string;
-	map: MapType;
-	isActive?: boolean;
-	style?: React.CSSProperties;
+	map: MapMeta;
+	isActive: boolean;
+	onClick: () => void;
 };
-function InteractiveImage({ src, map, isActive }: Props) {
+function InteractiveImage({ src, map, isActive, onClick }: Props) {
 	return (
 		<>
 			<img
@@ -89,12 +89,28 @@ function InteractiveImage({ src, map, isActive }: Props) {
 						{map.areas.map((area) => {
 							if (area.shape === "poly") {
 								return (
-									<polygon
+									<Tooltip key={area.id} content={area.label}>
+										{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+										<polygon
+											key={area.id}
+											fill={area.fillColor}
+											stroke={area.strokeColor}
+											points={area.coords.map((coord, i) => (i % 2 === 0 ? `${coord},` : coord)).join(" ")}
+											className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 group"
+											onClick={onClick}
+										/>
+									</Tooltip>
+								);
+							}
+							if (area.shape === "path") {
+								return (
+									<path
 										key={area.id}
 										fill={area.fillColor}
 										stroke={area.strokeColor}
-										points={area.coords.map((coord, i) => (i % 2 === 0 ? `${coord},` : coord)).join(" ")}
+										d={area.d}
 										className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 group"
+										style={{ visibility: isActive ? "visible" : "hidden" }}
 									/>
 								);
 							}
@@ -108,8 +124,8 @@ function InteractiveImage({ src, map, isActive }: Props) {
 										cx={area.coords[0]}
 										cy={area.coords[1]}
 										r={area.coords[2]}
-										className="z-30 cursor-pointer transition-opacity ease-in-out"
-										style={{ opacity: isActive ? 1 : 0 }}
+										className="z-30 cursor-pointer"
+										style={{ visibility: isActive ? "visible" : "hidden" }}
 									/>
 								);
 							}

@@ -41,11 +41,11 @@ export default function ProjectStartPage({ loaderData }: Route.ComponentProps) {
 				<div className="absolute bottom-28 left-0 right-0 flex justify-center  z-20">
 					<div className="grid gap-8">
 						<img src={logo} alt="Aurora Logo" className="h-42 my-4" />
-						<div className="relative mx-auto max-w-md rounded-full bg-gradient-to-tr from-pink-300 to-blue-300 p-0.5 shadow-xl">
+						<div className="cta-container">
 							<Button
 								as={Link}
 								to="spin"
-								className="p-8 bg-black/90 text-white"
+								className="p-8 cta"
 								color="default"
 								radius="full"
 								size="lg"
@@ -70,7 +70,7 @@ function VimeoBackgroundContainer({
 	const finalVideoUrl = `${videoUrl}?background=true&transparent=0&dnt=true&title=0&byline=0&portrait=0&muted=1&autoplay=1&autopause=0&controls=0&loop=1`;
 
 	return (
-		<div className="fixed inset-0 z-[-1] min-w-full min-h-full object-cover object-center bg-black">
+		<div className="fixed inset-0 z-[1] min-w-full min-h-full object-cover object-center bg-black">
 			{/* Overlay */}
 			<div className="absolute inset-0 bg-black/2 z-10" />
 			{videoUrl ? (

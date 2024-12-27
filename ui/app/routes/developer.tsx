@@ -43,8 +43,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 export default function DeveloperPage({ loaderData }: Route.ComponentProps) {
 	const { name, logo, expand } = loaderData;
 	return (
-		<main className="container mx-auto">
-			<div className="flex gap-4 my-6 p-4 items-center">
+		<main className="container mx-auto py-8">
+			<div className="flex gap-4 mb-6 items-center">
 				<Image src={logo} alt={name} className="" />
 				<h1 className="text-5xl">{name}</h1>
 			</div>

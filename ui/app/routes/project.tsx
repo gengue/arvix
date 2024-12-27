@@ -5,7 +5,7 @@ import pb from "~/lib/pb";
 import type { Route } from "./+types/project";
 
 export function meta(params: Route.MetaArgs) {
-	return [{ title: params?.data?.name }];
+	return [{ title: params?.data?.name, description: "Proyecto demo" }];
 }
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {

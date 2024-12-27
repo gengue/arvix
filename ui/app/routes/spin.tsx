@@ -6,6 +6,10 @@ import useSpin from "~/spin/useSpin";
 import type { Route } from "./+types/spin";
 import type { LoaderData } from "./masterplan-layout";
 
+export function meta(params: Route.MetaArgs) {
+	return [{ title: "Explorar inmueble", description: "Descubre el proyecto desde una vista a 360 grados" }];
+}
+
 export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const data = useRouteLoaderData<LoaderData>("routes/masterplan-layout");
 	const { videoRef, isPlaying, goForward, goBackward, poster, meta } = useSpin(data);

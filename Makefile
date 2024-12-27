@@ -34,6 +34,6 @@ db-squash:
 	# first, delete the unncessary migration files
 	@go run . migrate history-sync 
 
-# make path=pb_data/backups/snap.zip restore-backup
+# make path=snap.zip restore-backup
 restore-backup:
-	@rsync pb_data/backups/$(path) $(SERVER_USER)@$(SERVER_IP):$(REMOTE_APP_DIR)/$(path)
+	@rsync pb_data/backups/$(path) $(SERVER_USER)@$(SERVER_IP):$(REMOTE_APP_DIR)/pb_data/backups/$(path)

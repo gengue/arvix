@@ -23,9 +23,6 @@ rsync -avz migrations/ $SERVER_USER@$SERVER_IP:$REMOTE_APP_DIR/migrations || ech
 rsync -avz $APP_NAME $SERVER_USER@$SERVER_IP:$REMOTE_APP_DIR || echo_error "Failed to upload Go binary."
 
 
-# Perform a zero-downtime deployment
-echo_info "Performing zero-downtime deployment..."
-
+echo_info "Performing deployment..."
 ssh $SERVER_USER@$SERVER_IP "systemctl is-active --quiet arvix && sudo -S systemctl restart arvix || sudo -S systemctl start arvix"
-
 echo_info "Deployment completed successfully!"

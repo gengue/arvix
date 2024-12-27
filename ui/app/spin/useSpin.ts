@@ -17,7 +17,7 @@ export default function useSpin(data?: LoaderData) {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const videoRef = React.useRef<HTMLVideoElement>(null);
 
-	usePreloadMediaResources(data?.intro, data?.spin);
+	usePreloadMediaResources(data?.intro, data?.spin, data?.structures);
 
 	useEffect(() => {
 		const playVideo = async (videoEle: HTMLVideoElement) => {
@@ -162,24 +162,32 @@ interface Intro {
 	img?: string;
 }
 
-function usePreloadMediaResources(intro?: Intro, spin?: TransitionsRecord[]) {
-	const loaded = React.useRef(0);
+function usePreloadMediaResources(
+	intro?: Intro,
+	spin?: TransitionsRecord[],
+	structures?: Record<string, StructuresRecord>,
+) {
 	useEffect(() => {
 		if (!intro && !spin) return;
 
-		const preload = (imgSrc?: string, videoSrc?: string) => {
+		const preload = (videoSrc?: string, imgSrc?: string) => {
 			if (videoSrc) {
 				const videoEle = document.createElement("video");
 				videoEle.src = videoSrc;
 				videoEle.preload = "auto";
-				loaded.current += 1;
 			}
 			if (imgSrc) {
 				const img = new Image();
 				img.src = imgSrc;
-				loaded.current += 1;
 			}
 		};
+
+		if (structures) {
+			for (const key in structures) {
+				const structure = structures[key];
+				preload(structure.img);
+			}
+		}
 
 		if (intro) {
 			preload(intro.video, intro.img);
@@ -187,9 +195,10 @@ function usePreloadMediaResources(intro?: Intro, spin?: TransitionsRecord[]) {
 
 		if (spin) {
 			for (const item of spin) {
-				preload(item.backwardVideo, item.img);
 				preload(item.forwardVideo, item.img);
+				preload(item.backwardVideo);
+				preload(item.topVideo);
 			}
 		}
-	}, [intro, spin]);
+	}, [intro, spin, structures]);
 }

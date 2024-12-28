@@ -13,7 +13,7 @@ export function meta(params: Route.MetaArgs) {
 
 export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const data = useRouteLoaderData<LoaderData>("routes/masterplan-layout");
-	const { videoRef, isPlaying, poster, meta, type, goForward, goBackward, enter } = useSpin(data);
+	const { videoRef, isPlaying, poster, meta, type, goForward, goBackward, enter, leave } = useSpin(data);
 	const {
 		isOpen: floorMenuIsOpen,
 		onOpen: onOpenFloorMenu,
@@ -29,7 +29,9 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 		<>
 			<video
 				ref={videoRef}
-				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen z-[-1] m-0 left-2/4 top-2/4"
+				className={cn(
+					"absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen left-2/4 top-2/4 pointer-events-none",
+				)}
 				poster={poster}
 				muted
 				playsInline
@@ -43,26 +45,40 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 			{poster && (
 				<InteractiveImage src={poster} map={meta} isActive={!isPlaying} onClick={handleOnClickStructure} />
 			)}
-			{!floorMenuIsOpen && type !== "enter" && (
+			{type !== "enter" && (
 				<SpinButtons isPlaying={isPlaying} goForward={goForward} goBackward={goBackward} />
 			)}
 
-			{!floorMenuIsOpen && type === "enter" && (
+			{type === "enter" && !isPlaying && (
 				<Button
-					onPress={onOpenFloorMenu}
-					className="cta text-md fixed top-20 right-3 z-30"
+					onPress={() => leave()}
+					className="absolute top-20 left-3 z-30 brand-base"
 					radius="full"
 					color="default"
 					variant="flat"
 				>
 					<ArrowLeft />
-					Cambiar planta
+					Volver
 				</Button>
 			)}
 
+			{!floorMenuIsOpen && type === "enter" && (
+				<div className="cta-container absolute top-20 right-3 z-30">
+					<Button
+						onPress={onOpenFloorMenu}
+						className="cta text-md "
+						radius="full"
+						color="default"
+						variant="flat"
+					>
+						Cambiar planta
+					</Button>
+				</div>
+			)}
+
 			<div
-				className="fixed top-16 z-20 py-3 px-2 gap-1 flex flex-col items-center rounded-full text-white backdrop-blur-xl bg-black/40 border-default-100/30 border-1 transition-[right] duration-800"
-				style={{ right: floorMenuIsOpen && !isPlaying ? "0.3rem" : "-100%" }}
+				className="fixed top-16 z-20 py-3 px-1 gap-1 flex flex-col items-center rounded-full text-white backdrop-blur-xl bg-black/40 border-default-100/30 border-1 transition-[right] duration-800"
+				style={{ right: floorMenuIsOpen && !isPlaying && type === "enter" ? 0 : "-100%" }}
 			>
 				<Button
 					isIconOnly
@@ -103,7 +119,7 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 					<Button
 						key={i}
 						className={cn(
-							"text-lg text-default-100",
+							"text-lg text-default-100 min-w-16",
 							"AS3" === i && "border-default-100/30 bg-default/30 border-1",
 						)}
 						radius="full"

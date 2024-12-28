@@ -58,7 +58,7 @@ body {
 }
 
 .cta-container {
-  @apply relative mx-auto max-w-md rounded-full bg-gradient-to-tr from-pink-300 to-blue-300 p-0.5 shadow-xl;
+  @apply mx-auto max-w-md rounded-full bg-gradient-to-tr from-pink-300 to-blue-300 p-0.5 shadow-xl;
 }
 
 .cta {

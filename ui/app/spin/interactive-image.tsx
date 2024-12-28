@@ -40,7 +40,7 @@ export function InteractiveImage({ src, map, isActive, onClick }: Props) {
 											fill={area.fillColor}
 											stroke={area.strokeColor}
 											points={area.coords.map((coord, i) => (i % 2 === 0 ? `${coord},` : coord)).join(" ")}
-											className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 group"
+											className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 hover:opacity-100  transition-opacity duration-300"
 											onClick={onClick}
 										/>
 									</Tooltip>
@@ -54,7 +54,7 @@ export function InteractiveImage({ src, map, isActive, onClick }: Props) {
 											fill={area.fillColor}
 											stroke={area.strokeColor}
 											d={area.d}
-											className="opacity-0 z-20 cursor-pointer group-hover:opacity-100 group"
+											className="opacity-0 z-20 cursor-pointer hover:opacity-100 group transition-opacity duration-300"
 											style={{ visibility: isActive ? "visible" : "hidden" }}
 										/>
 									</Tooltip>

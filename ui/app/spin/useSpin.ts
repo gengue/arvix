@@ -1,9 +1,11 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import React from "react";
 import type { MapMeta } from "~/global";
 import useDebounce from "~/hooks/useDebounce";
 import type { StructuresRecord, TransitionsRecord } from "~/lib/pb.types";
 import type { LoaderData } from "~/routes/masterplan-layout";
+
+//TODO: try to play the video on event instead of effect
 
 export default function useSpin(data?: LoaderData) {
 	const [state, dispatch] = useReducer(reducer, {
@@ -65,26 +67,28 @@ export default function useSpin(data?: LoaderData) {
 		};
 	}, [state.type]);
 
-	const poster = useDebounce(state.spin?.img, 400);
+	const spinPoster = useDebounce(state.spin?.img, 500);
 
-	const getFinalPoster = (type: TransitionState["type"]) => {
-		if (type === "enter") return state.struct?.img;
-		if (type === "intro") return data?.intro?.img;
-		return poster ?? state.spin?.img;
-	};
+	const poster = useMemo(() => {
+		if (state.type === "intro") return data?.intro?.img;
+		if (state.type === "enter") return state.struct?.img;
+		return spinPoster;
+	}, [state.type, data?.intro?.img, state?.struct?.img, spinPoster]);
 
-	const getFinalMeta = (type: TransitionState["type"]) => {
-		return (type === "enter" ? state.struct?.meta : state.spin?.meta) as MapMeta;
-	};
+	const meta = useMemo(() => {
+		if (state.type === "enter") return state.struct?.meta as MapMeta;
+		return state.spin?.meta as MapMeta;
+	}, [state.type, state.struct?.meta, state.spin?.meta]);
 
 	return {
 		goForward: () => dispatch({ type: "forward" }),
 		goBackward: () => dispatch({ type: "back" }),
 		enter: () => dispatch({ type: "enter" }),
+		leave: () => dispatch({ type: "leave" }),
 		videoRef,
 		isPlaying,
-		poster: getFinalPoster(state.type),
-		meta: getFinalMeta(state.type),
+		poster,
+		meta,
 		type: state.type,
 	};
 }
@@ -93,7 +97,7 @@ export default function useSpin(data?: LoaderData) {
  * Main State Machine
  */
 
-type Motion = "intro" | "forward" | "back" | "enter";
+type Motion = "intro" | "forward" | "back" | "enter" | "leave";
 type TransitionState = {
 	type: Motion;
 	allSpins: TransitionsRecord[]; // come from the API
@@ -147,6 +151,14 @@ function reducer(state: TransitionState, action: SpinAction): TransitionState {
 			...state,
 			transitionVideo: state?.spin?.topVideo || "",
 			struct: state.allStructures["as3" as keyof typeof state.allStructures],
+			type: action.type,
+		};
+	}
+
+	if (action.type === "leave") {
+		return {
+			...state,
+			transitionVideo: "",
 			type: action.type,
 		};
 	}

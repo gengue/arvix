@@ -3,7 +3,7 @@ import { Authenticated } from "@refinedev/core";
 import { CatchAllNavigate } from "@refinedev/react-router";
 import type { Route } from "./+types/orgs";
 
-export function meta({}: Route.MetaArgs) {
+export function meta(_params: Route.MetaArgs) {
 	return [{ title: "Usuarios" }, { name: "description", content: "Administrar usuarios" }];
 }
 

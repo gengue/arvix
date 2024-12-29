@@ -55,6 +55,8 @@ body {
 
 .brand-base {
   @apply text-white backdrop-blur-xl bg-black/60 border-default-100/30 border-1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .cta-container {

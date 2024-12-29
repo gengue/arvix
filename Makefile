@@ -11,7 +11,7 @@ ui-dev:
 	@cd ui && npm run dev
 
 build:
-	@cd ui && npm run build && cd .. && go build
+	@cd ui && npm run build && cd .. && go build main.go
 
 types:
 	npx pocketbase-typegen --db ./pb_data/data.db --out ui/app/lib/pb.types.ts

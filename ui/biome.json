@@ -6,14 +6,9 @@
 		"useIgnoreFile": false
 	},
 	"files": {
-		"include": [
-			"app/**/*.tsx",
-			"app/**/*.ts"
-		],
+		"include": ["app/**/*.tsx", "app/**/*.ts"],
 		"ignoreUnknown": true,
-		"ignore": [
-			"**/*.min.js"
-		]
+		"ignore": ["**/*.min.js"]
 	},
 	"formatter": {
 		"enabled": true,

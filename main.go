@@ -26,10 +26,25 @@ func main() {
 	})
 
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+		se.Router.Bind(apis.Gzip())
+		se.Router.Bind(apis.BodyLimit(80 << 20)) // 80MB
 		// serves static files from the provided public dir (if exists)
-		se.Router.GET("/{path...}", apis.Static(ui.DistDirFS, true))
+		// se.Router.GET("/{path...}", apis.Static(ui.DistDirFS, true))
+
+		se.Router.GET("/{path...}", func(c *core.RequestEvent) error {
+			// Set caching headers
+			c.Response.Header().Add("Cache-Control", "max-age=31536000, stale-while-revalidate=604800")
+
+			// Serve the file
+			return apis.Static(ui.DistDirFS, true)(c)
+		})
 
 		return se.Next()
+	})
+
+	app.OnFileDownloadRequest().BindFunc(func(e *core.FileDownloadRequestEvent) error {
+		e.Response.Header().Add("Cache-Control", "max-age=31536000, stale-while-revalidate=604800")
+		return e.Next()
 	})
 
 	if err := app.Start(); err != nil {

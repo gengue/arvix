@@ -1,4 +1,4 @@
-import { Button, Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
+import { Card, CardHeader, Image } from "@nextui-org/react";
 import { Link, data } from "react-router";
 import pb from "~/lib/pb";
 import type { ClientsResponse, ProjectsRecord } from "~/lib/pb.types";

@@ -1,19 +1,39 @@
 import { Button } from "@nextui-org/button";
 import { cn, useDisclosure } from "@nextui-org/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useRouteLoaderData } from "react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate, useRouteLoaderData, useSearchParams } from "react-router";
+import type { MapMeta } from "~/global";
+import type { StructuresRecord, TransitionsRecord } from "~/lib/pb.types";
 import { InteractiveImage } from "~/spin/interactive-image";
 import type { Route } from "./+types/exterior";
 import type { LoaderData } from "./layout";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { MapMeta } from "~/global";
-import type { StructuresRecord, TransitionsRecord } from "~/lib/pb.types";
 
-export function meta(params: Route.MetaArgs) {
+export function meta(_params: Route.MetaArgs) {
 	return [{ title: "Explorar inmueble", description: "Descubre el proyecto desde una vista a 360 grados" }];
 }
 
+type Steps = "intro" | "exterior" | "detail";
+
+const getInitialExternalFrameFromSearchParams = (searchParams: URLSearchParams, data?: LoaderData) => {
+	if (searchParams.has("i")) {
+		const idx = Number(searchParams.get("i"));
+		if (data?.spin?.[idx]) return data.spin[idx];
+	}
+	return data?.spin[0] ?? null;
+};
+
+const getInitialDetailFrameFromUrl = (params: Route.ComponentProps["params"], data?: LoaderData) => {
+	if (params?.step === "detail" && data?.structures) {
+		return data.structures.as3;
+	}
+	return null;
+};
 export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
+	const baseUrl = `/${params.developerSlug}/${params.projectSlug}/masterplan`;
+	const navigate = useNavigate();
+	const [searchParams, setSearchParams] = useSearchParams();
+
 	const data = useRouteLoaderData<LoaderData>("routes/masterplan/layout");
 	const {
 		isOpen: floorMenuIsOpen,
@@ -24,12 +44,16 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const [isPlaying, setIsPlaying] = useState(false);
-	const [type, setType] = useState<"intro" | "exterior" | "detail">("intro");
-	const [exteriorFrame, setFrame] = useState<TransitionsRecord | null>(data?.spin?.[0] || null);
-	const [detailFrame, setDetailFrame] = useState<StructuresRecord | null>(null);
-	const [introPlayed, setIntroPlayed] = useState(false);
+	const [type, setType] = useState<Steps>((params?.step as Steps) || "intro");
+	const [exteriorFrame, setFrame] = useState<TransitionsRecord | null>(
+		getInitialExternalFrameFromSearchParams(searchParams, data),
+	);
+	const [detailFrame, setDetailFrame] = useState<StructuresRecord | null>(
+		getInitialDetailFrameFromUrl(params, data),
+	);
+	const [introPlayed, setIntroPlayed] = useState(params.step !== undefined && params.step !== "intro");
 
-	const playVideo = useCallback(async (videoEle: HTMLVideoElement, src: string) => {
+	const playVideo = useCallback(async (videoEle: HTMLVideoElement, src: string, cb?: () => void) => {
 		videoEle.src = src;
 		try {
 			videoEle.load();
@@ -40,6 +64,9 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 
 			await videoEle.play();
 			setIsPlaying(true);
+			if (cb) {
+				cb();
+			}
 		} catch (e) {
 			// console.error(e);
 		}
@@ -48,15 +75,20 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const handleSpinForward = () => {
 		if (videoRef.current && data?.spin && exteriorFrame) {
 			const transitionVideo = exteriorFrame.forwardVideo || "";
-			playVideo(videoRef.current, transitionVideo);
-			if (type === "exterior") {
-				const idx = data?.spin?.findIndex((f) => f.id === exteriorFrame.id) || 0;
-				const nextIdx = (idx + 1) % data?.spin?.length;
-				const nextFrame = data?.spin?.[nextIdx];
-				setTimeout(() => {
-					setFrame(nextFrame);
-				}, 500);
-			}
+			playVideo(videoRef.current, transitionVideo, () => {
+				if (type === "exterior") {
+					const idx = data?.spin?.findIndex((f) => f.id === exteriorFrame.id) || 0;
+					const nextIdx = (idx + 1) % data?.spin?.length;
+					const nextFrame = data?.spin?.[nextIdx];
+					setSearchParams((prev) => {
+						prev.set("i", nextIdx.toString());
+						return prev;
+					});
+					setTimeout(() => {
+						setFrame(nextFrame);
+					}, 500);
+				}
+			});
 		}
 	};
 
@@ -65,6 +97,10 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 			const idx = data?.spin?.findIndex((f) => f.id === exteriorFrame.id) || 0;
 			const nextIdx = (idx - 1 + data?.spin?.length) % data?.spin?.length;
 			const nextFrame = data?.spin?.[nextIdx];
+			setSearchParams((prev) => {
+				prev.set("i", nextIdx.toString());
+				return prev;
+			});
 
 			const transitionVideo = nextFrame.backwardVideo || "";
 			playVideo(videoRef.current, transitionVideo);
@@ -83,6 +119,7 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 		}
 
 		if (type === "exterior" && exteriorFrame) {
+			navigate(`${baseUrl}/detail`, { replace: true });
 			setTimeout(() => {
 				const nextFrame = data?.structures?.as3;
 				setType("detail");
@@ -96,16 +133,26 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const handleVideoEnded = () => {
 		if (!introPlayed && data?.spin?.[0]) {
 			setIntroPlayed(true);
+			navigate(`${baseUrl}/exterior`, { replace: true });
 			setTimeout(() => {
 				setType("exterior");
 				setFrame(data?.spin[0]);
-			}, 500);
+				setSearchParams((prev) => {
+					prev.set("i", "0");
+					return prev;
+				});
+			}, 400);
 		}
-		setIsPlaying(false);
+
+		setTimeout(() => {
+			setIsPlaying(false);
+		}, 300);
 	};
 
 	const handleBackToExterior = () => {
 		setType("exterior");
+		const idx = data?.spin?.findIndex((f) => f.id === exteriorFrame?.id) || 0;
+		navigate(`${baseUrl}/exterior?i=${idx}`, { replace: true });
 	};
 
 	useEffect(() => {

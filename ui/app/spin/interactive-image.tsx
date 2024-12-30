@@ -15,7 +15,7 @@ export function InteractiveImage({ src, map, isActive, onClick }: Props) {
 				src={src}
 				fallbackSrc={fallback}
 				alt="Next frame"
-				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen m-0 left-2/4 top-2/4 transition-opacity duration-500"
+				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen m-0 left-2/4 top-2/4"
 				radius="none"
 				removeWrapper
 				disableSkeleton

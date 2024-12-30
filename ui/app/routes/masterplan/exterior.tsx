@@ -96,8 +96,10 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	const handleVideoEnded = () => {
 		if (!introPlayed && data?.spin?.[0]) {
 			setIntroPlayed(true);
-			setType("exterior");
-			setFrame(data?.spin[0]);
+			setTimeout(() => {
+				setType("exterior");
+				setFrame(data?.spin[0]);
+			}, 500);
 		}
 		setIsPlaying(false);
 	};
@@ -113,7 +115,11 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 		}
 	}, [data?.intro, data?.spin, playVideo, introPlayed]);
 
-	const currentFrameImg = type === "detail" ? detailFrame?.img : exteriorFrame?.img;
+	const currentFrameImg = introPlayed
+		? type === "detail"
+			? detailFrame?.img
+			: exteriorFrame?.img
+		: data?.intro?.img;
 	const currentFrameMeta = type === "detail" ? detailFrame?.meta : exteriorFrame?.meta;
 
 	return (
@@ -130,9 +136,9 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 				Tu navegador no soporta las características necesarias. Use un navegador moderno como Google Chrome,
 				Mozilla Firefox, Safari o Microsoft Edge.
 			</video>
-			{exteriorFrame?.img && (
+			{currentFrameImg && (
 				<InteractiveImage
-					src={introPlayed ? currentFrameImg : data?.intro?.img}
+					src={currentFrameImg}
 					map={currentFrameMeta as MapMeta}
 					isActive={!isPlaying}
 					onClick={handleOnClickStructure}

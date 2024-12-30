@@ -1,7 +1,11 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	tpl "html/template"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -11,6 +15,7 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+	"github.com/pocketbase/pocketbase/tools/template"
 )
 
 func main() {
@@ -30,6 +35,43 @@ func main() {
 		se.Router.Bind(apis.BodyLimit(80 << 20)) // 80MB
 		// serves static files from the provided public dir (if exists)
 		// se.Router.GET("/{path...}", apis.Static(ui.DistDirFS, true))
+
+		registry := template.NewRegistry()
+
+		se.Router.GET("/__hello/{slug}", func(e *core.RequestEvent) error {
+			slug := e.Request.PathValue("slug")
+
+			record, err := app.FindFirstRecordByData("projects", "slug", slug)
+			if err != nil {
+				return err
+			}
+			errs := app.ExpandRecord(record, []string{"transitions_via_project", "structures_via_project"}, nil)
+			if len(errs) > 0 {
+				return fmt.Errorf("failed to expand: %v", errs)
+			}
+
+			log.Println(record.Get("transitions_via_project"))
+			log.Println(record.ExpandedAll("transitions_via_project"))
+
+			j, err := json.Marshal(record)
+			if err != nil {
+				return fmt.Errorf("failed to marshal: %v", err)
+			}
+
+			html, err := registry.LoadFiles(
+				"views/layout.html",
+				"views/hello.html",
+			).Render(map[string]any{
+				"slug": slug,
+				"json": tpl.JS(j),
+			})
+			if err != nil {
+				// or redirect to a dedicated 404 HTML page
+				return e.NotFoundError("", err)
+			}
+
+			return e.HTML(http.StatusOK, html)
+		})
 
 		se.Router.GET("/{path...}", func(c *core.RequestEvent) error {
 			// Set caching headers

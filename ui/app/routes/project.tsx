@@ -44,7 +44,8 @@ export default function ProjectStartPage({ loaderData }: Route.ComponentProps) {
 						<div className="cta-container">
 							<Button
 								as={Link}
-								to="spin"
+								// to="spin"
+								to="masterplan"
 								className="p-8 cta"
 								color="default"
 								radius="full"

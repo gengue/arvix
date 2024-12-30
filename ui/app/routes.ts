@@ -8,6 +8,9 @@ export default [
 		layout("routes/masterplan-layout.tsx", [
 			route(":developerSlug/:projectSlug/spin/:step?", "routes/spin.tsx"),
 		]),
+		layout("routes/masterplan/layout.tsx", [
+			route(":developerSlug/:projectSlug/masterplan/:step?", "routes/masterplan/exterior.tsx"),
+		]),
 	]),
 	...prefix("admin", [
 		layout("routes/admin/layout.tsx", [

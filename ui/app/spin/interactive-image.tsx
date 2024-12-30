@@ -1,22 +1,27 @@
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip, Image } from "@nextui-org/react";
 import type { MapMeta } from "~/global";
 
 type Props = {
-	src: string;
+	src?: string;
 	map: MapMeta;
 	isActive: boolean;
 	onClick: () => void;
 };
 export function InteractiveImage({ src, map, isActive, onClick }: Props) {
+	const fallback = src?.replace("1920x1080", "200x113");
 	return (
 		<>
-			<img
+			<Image
 				src={src}
+				fallbackSrc={fallback}
 				alt="Next frame"
-				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen m-0 left-2/4 top-2/4"
+				className="absolute -translate-x-2/4 -translate-y-2/4 object-cover h-screen w-screen m-0 left-2/4 top-2/4 transition-opacity duration-500"
+				radius="none"
+				removeWrapper
+				disableSkeleton
 				style={{ opacity: isActive ? 1 : 0 }}
 			/>
-			{map && (
+			{map && isActive && (
 				<svg
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"

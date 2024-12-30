@@ -98,17 +98,17 @@ export function Menu(props: NavbarProps & { params: Route.ComponentProps["params
 	const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 	const location = useLocation();
 
+	const base = `/${props.params.developerSlug}/${props.params.projectSlug}`;
+
 	const menuItems = useMemo(() => {
-		const base = `/${props.params.developerSlug}/${props.params.projectSlug}`;
 		return [
-			{ label: "Intro", href: `${base}/` },
 			{ label: "El edificio", href: `${base}/masterplan` },
 			{ label: "Plantas", href: `${base}/#floors` },
 			{ label: "Amenidades", href: `${base}/#amenities` },
 			{ label: "Ubicación", href: `${base}/#location` },
 			{ label: "Contacto", href: `${base}/#contact` },
 		];
-	}, [props.params]);
+	}, [base]);
 
 	return (
 		<Navbar
@@ -138,8 +138,13 @@ export function Menu(props: NavbarProps & { params: Route.ComponentProps["params
 			position="sticky"
 		>
 			<NavbarContent justify="center" className="">
+				<NavbarItem>
+					<Link className={cn("text-default-200 text-md")} href={base} size="sm">
+						Intro
+					</Link>
+				</NavbarItem>
 				{menuItems.map((item) => (
-					<NavbarItem key={item.href} isActive={location.pathname === item.href}>
+					<NavbarItem key={item.href} isActive={location.pathname.startsWith(item.href)}>
 						<Link className={cn("text-default-200 text-md")} href={item.href} size="sm">
 							{item.label}
 						</Link>

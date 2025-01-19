@@ -42,7 +42,6 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 	} = useDisclosure();
 
 	const videoRef = useRef<HTMLVideoElement>(null);
-
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [type, setType] = useState<Steps>((params?.step as Steps) || "intro");
 	const [exteriorFrame, setFrame] = useState<TransitionsRecord | null>(
@@ -77,7 +76,7 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 			const transitionVideo = exteriorFrame.forwardVideo || "";
 			playVideo(videoRef.current, transitionVideo, () => {
 				if (type === "exterior") {
-					const idx = data?.spin?.findIndex((f) => f.id === exteriorFrame.id) || 0;
+					const idx = data?.spin?.findIndex((f: { id: string }) => f.id === exteriorFrame.id) || 0;
 					const nextIdx = (idx + 1) % data?.spin?.length;
 					const nextFrame = data?.spin?.[nextIdx];
 					setSearchParams((prev) => {
@@ -94,7 +93,7 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 
 	const handleSpinBackward = () => {
 		if (videoRef.current && data?.spin && exteriorFrame) {
-			const idx = data?.spin?.findIndex((f) => f.id === exteriorFrame.id) || 0;
+			const idx = data?.spin?.findIndex((f: { id: string }) => f.id === exteriorFrame.id) || 0;
 			const nextIdx = (idx - 1 + data?.spin?.length) % data?.spin?.length;
 			const nextFrame = data?.spin?.[nextIdx];
 			setSearchParams((prev) => {
@@ -186,6 +185,7 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 				muted
 				playsInline
 				onEnded={handleVideoEnded}
+				preload="auto"
 			>
 				Tu navegador no soporta las características necesarias. Use un navegador moderno como Google Chrome,
 				Mozilla Firefox, Safari o Microsoft Edge.
@@ -214,76 +214,14 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 					Volver
 				</Button>
 			)}
-
-			{!floorMenuIsOpen && type === "detail" && (
-				<div className="cta-container absolute top-20 right-3 z-30">
-					<Button
-						onPress={onOpenFloorMenu}
-						className="cta text-md "
-						radius="full"
-						color="default"
-						variant="flat"
-					>
-						Cambiar planta
-					</Button>
-				</div>
+			{type === "detail" && !isPlaying && (
+				<FloorSelector
+					value={detailFrame}
+					onSelect={(slug) => handleSelectFloor(slug)}
+					isOpen={floorMenuIsOpen}
+					onOpen={onOpenFloorMenuChange}
+				/>
 			)}
-
-			<div
-				className="fixed top-16 z-20 py-3 px-1 gap-1 flex flex-col items-center rounded-full text-white backdrop-blur-xl bg-black/40 border-default-100/30 border-1 transition-[right] duration-800"
-				style={{ right: floorMenuIsOpen && !isPlaying && type === "detail" ? 0 : "-100%" }}
-			>
-				<Button
-					isIconOnly
-					aria-label="Like"
-					color="secondary"
-					className="text-lg text-default-100 cta"
-					radius="full"
-					onPress={onOpenFloorMenuChange}
-				>
-					<ArrowRight />
-				</Button>
-				{[
-					"as3",
-					"26",
-					"25",
-					"24",
-					"23",
-					"22",
-					"21",
-					"20",
-					"19",
-					"18",
-					"17",
-					"16",
-					"15",
-					"14",
-					"13",
-					"12",
-					"11",
-					"10",
-					"9",
-					"8",
-					"7",
-					"6",
-					"as2",
-					"as1",
-				].map((i) => (
-					<Button
-						key={i}
-						className={cn(
-							"text-lg text-default-100 min-w-16 uppercase",
-							detailFrame?.slug === i && "border-default-100/30 bg-default/30 border-1",
-						)}
-						onPress={() => handleSelectFloor(i)}
-						radius="full"
-						size="md"
-						variant="light"
-					>
-						{i}
-					</Button>
-				))}
-			</div>
 		</>
 	);
 }
@@ -317,6 +255,86 @@ function SpinButtons({
 			>
 				<ArrowRight />
 			</Button>
+		</>
+	);
+}
+
+function FloorSelector({
+	value,
+	isOpen,
+	onSelect,
+	onOpen,
+}: {
+	isOpen: boolean;
+	value: StructuresRecord | null;
+	onSelect: (slug: string) => void;
+	onOpen: () => void;
+}) {
+	return (
+		<>
+			{!isOpen && (
+				<div className="cta-container absolute top-20 right-3 z-30">
+					<Button onPress={onOpen} className="cta text-md " radius="full" color="default" variant="flat">
+						Cambiar planta
+					</Button>
+				</div>
+			)}
+			<div
+				className="fixed top-16 z-20 py-3 px-1 gap-1 flex flex-col items-center rounded-full text-white backdrop-blur-xl bg-black/40 border-default-100/30 border-1 transition-[right] duration-800"
+				style={{ right: isOpen ? 0 : "-100%" }}
+			>
+				<Button
+					isIconOnly
+					aria-label="Like"
+					color="secondary"
+					className="text-lg text-default-100 cta"
+					radius="full"
+					onPress={onOpen}
+				>
+					<ArrowRight />
+				</Button>
+				{[
+					"as3",
+					"26",
+					"25",
+					"24",
+					"23",
+					"22",
+					"21",
+					"20",
+					"19",
+					"18",
+					"17",
+					"16",
+					"15",
+					"14",
+					"13",
+					"12",
+					"11",
+					"10",
+					"9",
+					"8",
+					"7",
+					"6",
+					"as2",
+					"as1",
+				].map((i) => (
+					<Button
+						key={i}
+						className={cn(
+							"text-lg text-default-100 min-w-16 uppercase",
+							(value?.slug === i || value?.slug === `floor-${i}`) &&
+								"border-default-100/30 bg-default/30 border-1",
+						)}
+						onPress={() => onSelect(i)}
+						radius="full"
+						size="md"
+						variant="light"
+					>
+						{i}
+					</Button>
+				))}
+			</div>
 		</>
 	);
 }

@@ -5,9 +5,6 @@ export default [
 		index("routes/home.tsx"),
 		route(":developerSlug", "routes/developer.tsx"),
 		route(":developerSlug/:projectSlug", "routes/project.tsx"),
-		layout("routes/masterplan-layout.tsx", [
-			route(":developerSlug/:projectSlug/spin/:step?", "routes/spin.tsx"),
-		]),
 		layout("routes/masterplan/layout.tsx", [
 			route(":developerSlug/:projectSlug/masterplan/:step?", "routes/masterplan/exterior.tsx"),
 		]),

@@ -20,9 +20,7 @@ import type { Route } from "./+types/layout";
 let cachedResponse: Awaited<ReturnType<typeof clientLoader>> | null = null;
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-	console.log("entro aca");
 	if (cachedResponse) return cachedResponse;
-	console.log("entro aca 2");
 	const [dev, record] = await Promise.all([
 		pb.collection("clients").getFirstListItem(pb.filter("slug={:slug}", { slug: params.developerSlug }), {
 			fields: "id",
@@ -55,15 +53,24 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 	let spin: TransitionsRecord[] = [];
 
 	if (expand?.transitions_via_project) {
-		spin = expand.transitions_via_project
-			.sort((a, b) => a?.order - b?.order)
-			.map((i) => {
-				if (i.backwardVideo) i.backwardVideo = pb.files.getURL(i, i.backwardVideo);
-				if (i.forwardVideo) i.forwardVideo = pb.files.getURL(i, i.forwardVideo);
-				if (i.topVideo) i.topVideo = pb.files.getURL(i, i.topVideo);
-				i.img = pb.files.getURL(i, i.img, { thumb: "1920x1080" });
-				return i;
-			});
+		spin = await Promise.all(
+			expand.transitions_via_project
+				.sort((a, b) => a?.order - b?.order)
+				.map(async (i) => {
+					const [back, forward, top] = await Promise.all([
+						i.backwardVideo ? preloadVideo(pb.files.getURL(i, i.backwardVideo)) : "",
+						i.forwardVideo ? preloadVideo(pb.files.getURL(i, i.forwardVideo)) : "",
+						i.topVideo ? preloadVideo(pb.files.getURL(i, i.topVideo)) : "",
+					]);
+					i.backwardVideo = back;
+					i.forwardVideo = forward;
+					i.topVideo = top;
+
+					i.img = pb.files.getURL(i, i.img, { thumb: "1920x1080" });
+					return i;
+				}),
+		);
+		// TODO preload all videos i parallel and assign them to the object
 	}
 
 	let structures: Record<string, StructuresRecord> = {};
@@ -79,7 +86,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 	const result = {
 		project,
 		intro: {
-			video: introTransitionVideo ? pb.files.getURL(record, introTransitionVideo) : "",
+			video: introTransitionVideo ? await preloadVideo(pb.files.getURL(record, introTransitionVideo)) : "",
 			img: introImg,
 		},
 		spin,
@@ -98,6 +105,12 @@ export default function MasterplanLayout({ loaderData, params }: Route.Component
 			<Outlet />
 		</main>
 	);
+}
+
+async function preloadVideo(src: string) {
+	const res = await fetch(src);
+	const blob = await res.blob();
+	return URL.createObjectURL(blob);
 }
 
 export function Menu(props: NavbarProps & { params: Route.ComponentProps["params"] }) {

@@ -12,7 +12,7 @@ export const links: Route.LinksFunction = () => [
 	},
 	{
 		rel: "preconnect",
-		href: "http://localhost:8090",
+		href: import.meta.env.VITE_PB_URL,
 		crossOrigin: "anonymous",
 	},
 	{

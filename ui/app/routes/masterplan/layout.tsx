@@ -17,7 +17,12 @@ import pb from "~/lib/pb";
 import type { ProjectsResponse, StructuresRecord, TransitionsRecord } from "~/lib/pb.types";
 import type { Route } from "./+types/layout";
 
+let cachedResponse: Awaited<ReturnType<typeof clientLoader>> | null = null;
+
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+	console.log("entro aca");
+	if (cachedResponse) return cachedResponse;
+	console.log("entro aca 2");
 	const [dev, record] = await Promise.all([
 		pb.collection("clients").getFirstListItem(pb.filter("slug={:slug}", { slug: params.developerSlug }), {
 			fields: "id",
@@ -71,8 +76,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 				return acc;
 			}, structures);
 	}
-
-	return {
+	const result = {
 		project,
 		intro: {
 			video: introTransitionVideo ? pb.files.getURL(record, introTransitionVideo) : "",
@@ -81,6 +85,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 		spin,
 		structures,
 	};
+	cachedResponse = result;
+	return result;
 }
 
 export type LoaderData = Awaited<ReturnType<typeof clientLoader>>;

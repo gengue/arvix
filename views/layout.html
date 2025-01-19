@@ -1,13 +1,87 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
-    <title>{{block "title" .}}Default app title{{end}}</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {{block "title" .}} Arvix - Visualización Arquitectónica{{end}}
+    </title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=DM+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .heading-font {
+        font-family: "Space Grotesk", sans-serif;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              sand: {
+                50: "#faf8f6",
+                100: "#f5f0e8",
+                200: "#ebe2d5",
+                300: "#e0d4c3",
+                400: "#d5c6b0",
+                500: "#cbb89e",
+              },
+            },
+          },
+        },
+      };
+    </script>
   </head>
-  <body>
-    Header... {{block "body" .}} Default app body... {{end}} Footer...
-  </body>
+  <body class="bg-sand-50 text-gray-900">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-sand-50/90 backdrop-blur-sm">
+      <div class="max-w-6xl mx-auto px-8 py-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <i data-lucide="building-2" class="w-7 h-7 text-gray-900"></i>
+            <span class="text-2xl font-light heading-font tracking-wide"
+              >arvix</span
+            >
+          </div>
+          <button
+            class="px-8 py-3 text-base font-light border border-gray-900 hover:bg-gray-900 hover:text-sand-50 transition-colors rounded-full"
+          >
+            Contactar
+            <i data-lucide="mail" class="w-4 h-4 ml-2 inline"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
 
-  <script module>
-    window.__DATA__ = {{.json}};
-  </script>
+    <main class="pt-32">{{block "body" .}} {{end}}</main>
+
+    <!-- Footer -->
+    <footer class="py-16 border-t border-sand-100">
+      <div class="max-w-6xl mx-auto px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex items-center gap-3 mb-6 md:mb-0">
+            <i data-lucide="building-2" class="w-6 h-6 text-gray-900"></i>
+            <span class="text-xl font-light heading-font">arvix</span>
+          </div>
+          <p class="text-sm text-gray-600 font-light">
+            © 2025 Arvix. Todos los derechos reservados.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      lucide.createIcons();
+    </script>
+    <script module>
+      window.__DATA__ = {{.json}};
+    </script>
+  </body>
 </html>

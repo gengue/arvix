@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	// _ "github.com/gengue/arvix/migrations"
+
 	"github.com/gengue/arvix/ui"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -77,6 +78,18 @@ func main() {
 			// Set caching headers
 			c.Response.Header().Add("Cache-Control", "max-age=31536000, stale-while-revalidate=604800")
 
+			// home route will be rendered as a template html
+			if c.Request.PathValue("path") == "" {
+				html, err := registry.LoadFiles(
+					"views/layout.html",
+					"views/index.html",
+				).Render(nil)
+				if err != nil {
+					// or redirect to a dedicated 404 HTML page
+					return c.NotFoundError("", err)
+				}
+				return c.HTML(http.StatusOK, html)
+			}
 			// Serve the file
 			return apis.Static(ui.DistDirFS, true)(c)
 		})

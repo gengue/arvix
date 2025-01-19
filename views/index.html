@@ -1,0 +1,138 @@
+{{define "title"}} Arvix - Visualización Arquitectónica {{end}} {{define
+"body"}}
+
+<!-- Hero -->
+<section class="min-h-screen pb-24">
+  <div class="max-w-6xl mx-auto px-8">
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+      <div>
+        <h1
+          class="heading-font text-6xl lg:text-7xl font-light leading-[1.1] mb-12"
+        >
+          Visualiza el futuro<br />
+
+          <span class="text-sky-700">de la arquitectura</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-12 font-light leading-relaxed">
+          Transforme sus proyectos arquitectónicos con visualizaciones
+          interactivas que capturan cada detalle
+        </p>
+        <div class="flex flex-col sm:flex-row gap-6">
+          <button
+            class="group px-8 py-4 bg-gray-900 text-sand-50 text-lg font-light hover:bg-gray-800 transition-colors rounded-full"
+          >
+            Solicitar Demo
+            <i
+              data-lucide="arrow-right"
+              class="w-5 h-5 ml-2 inline group-hover:translate-x-1 transition-transform"
+            ></i>
+          </button>
+          <button
+            class="px-8 py-4 text-lg font-light text-gray-900 hover:text-gray-600 transition-colors rounded-full"
+          >
+            Ver Demo
+            <i data-lucide="play" class="w-5 h-5 ml-2 inline"></i>
+          </button>
+        </div>
+      </div>
+      <div class="relative aspect-[4/5]">
+        <img
+          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80"
+          alt="Architectural Visualization"
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-sand-200/20"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Video Demo -->
+<section class="py-32 bg-white">
+  <div class="max-w-6xl mx-auto px-8">
+    <h2 class="heading-font text-5xl mb-4 font-light mb-24 max-w-2xl">
+      Vea cómo Arvix transforma sus proyectos
+    </h2>
+    <p class="text-xl text-gray-600 font-light leading-relaxed mb-12">
+      Con nuestra plataforma web, su estudio 3D puede alcanzar nuevas alturas,
+      permitiéndole enfocarse en sus actividades creativas mientras Arvix se
+      encarga del resto.
+    </p>
+    <div class="aspect-video bg-sand-100">
+      <iframe
+        class="w-full h-full"
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        title="Demo Video"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="py-32">
+  <div class="max-w-6xl mx-auto px-8">
+    <h2 class="heading-font text-5xl font-light mb-24 max-w-2xl">
+      Características diseñadas con propósito
+    </h2>
+    <div class="grid md:grid-cols-3 gap-20">
+      <div class="group">
+        <i data-lucide="layers" class="w-12 h-12 mb-8 text-gray-900"></i>
+        <h3 class="heading-font text-2xl font-light mb-4">
+          Visualización por Capas
+        </h3>
+        <p class="text-gray-600 leading-relaxed font-light">
+          Explore cada aspecto de su proyecto con capas interactivas
+          meticulosamente detalladas
+        </p>
+      </div>
+      <div class="group">
+        <i data-lucide="building-2" class="w-12 h-12 mb-8 text-gray-900"></i>
+        <h3 class="heading-font text-2xl font-light mb-4">
+          Renders Fotorrealistas
+        </h3>
+        <p class="text-gray-600 leading-relaxed font-light">
+          Visualizaciones de alta calidad que muestran el resultado final con
+          precisión
+        </p>
+      </div>
+      <div class="group">
+        <i data-lucide="users" class="w-12 h-12 mb-8 text-gray-900"></i>
+        <h3 class="heading-font text-2xl font-light mb-4">
+          Colaboración en Tiempo Real
+        </h3>
+        <p class="text-gray-600 leading-relaxed font-light">
+          Trabaje con su equipo y clientes en tiempo real con simplicidad
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-32 bg-white">
+  <div class="max-w-2xl mx-auto px-8">
+    <h2 class="heading-font text-5xl font-light mb-8">Comience su proyecto</h2>
+    <p class="text-xl text-gray-600 mb-16 font-light">
+      Descubra cómo Arvix puede potenciar su estudio 3d en el sector de la
+      construcción con una demostración.
+    </p>
+    <div class="space-y-6">
+      <input
+        type="email"
+        placeholder="nombre@empresa.com"
+        class="w-full px-8 py-4 bg-sand-50 border-0 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900"
+      />
+      <button
+        class="w-full px-8 py-4 bg-gray-900 text-sand-50 font-light hover:bg-gray-800 transition-colors rounded-full"
+      >
+        Solicitar Información
+        <i data-lucide="mail" class="w-5 h-5 ml-2 inline"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+{{end}}

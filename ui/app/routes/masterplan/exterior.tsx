@@ -151,8 +151,15 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 
 	const handleBackToExterior = () => {
 		setType("exterior");
-		const idx = data?.spin?.findIndex((f) => f.id === exteriorFrame?.id) || 0;
+		const idx = data?.spin?.findIndex((f: { id: string | undefined }) => f.id === exteriorFrame?.id) || 0;
 		navigate(`${baseUrl}/exterior?i=${idx}`, { replace: true });
+	};
+
+	const handleSelectFloor = (floor: string) => {
+		console.log(floor, data?.structures);
+		const nextFrame = data?.structures?.[floor.length > 2 ? floor : `floor-${floor}`];
+		setDetailFrame(nextFrame as StructuresRecord);
+		setType("detail");
 	};
 
 	useEffect(() => {
@@ -237,7 +244,7 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 					<ArrowRight />
 				</Button>
 				{[
-					"AS3",
+					"as3",
 					"26",
 					"25",
 					"24",
@@ -259,15 +266,16 @@ export default function SpinPage({ loaderData, params }: Route.ComponentProps) {
 					"8",
 					"7",
 					"6",
-					"AS2",
-					"AS1",
+					"as2",
+					"as1",
 				].map((i) => (
 					<Button
 						key={i}
 						className={cn(
-							"text-lg text-default-100 min-w-16",
-							"AS3" === i && "border-default-100/30 bg-default/30 border-1",
+							"text-lg text-default-100 min-w-16 uppercase",
+							detailFrame?.slug === i && "border-default-100/30 bg-default/30 border-1",
 						)}
+						onPress={() => handleSelectFloor(i)}
 						radius="full"
 						size="md"
 						variant="light"

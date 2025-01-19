@@ -4,7 +4,11 @@
 
 html,
 body {
-  @apply bg-slate-950 text-sky-50 min-h-screen w-screen;
+  @apply dark:bg-slate-950 bg-slate-100 min-h-screen w-screen;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
 }
 
 .loader {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	tpl "html/template"
@@ -18,6 +20,9 @@ import (
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/template"
 )
+
+//go:embed views/*
+var viewsfs embed.FS
 
 func main() {
 	app := pocketbase.New()
@@ -59,7 +64,7 @@ func main() {
 				return fmt.Errorf("failed to marshal: %v", err)
 			}
 
-			html, err := registry.LoadFiles(
+			html, err := registry.LoadFS(viewsfs,
 				"views/layout.html",
 				"views/hello.html",
 			).Render(map[string]any{
@@ -80,7 +85,7 @@ func main() {
 
 			// home route will be rendered as a template html
 			if c.Request.PathValue("path") == "" {
-				html, err := registry.LoadFiles(
+				html, err := registry.LoadFS(viewsfs,
 					"views/layout.html",
 					"views/index.html",
 				).Render(nil)

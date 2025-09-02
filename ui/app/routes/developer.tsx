@@ -48,7 +48,6 @@ export default function DeveloperPage({ loaderData }: Route.ComponentProps) {
 				<Image src={logo} alt={name} className="" />
 				<h1 className="text-5xl">{name}</h1>
 			</div>
-			<h2 className="text-2xl my-8">Proyectos</h2>
 			<nav className="flex flex-col flex-wrap gap-6">
 				{expand?.projects_via_client?.map((project) => (
 					<Card
